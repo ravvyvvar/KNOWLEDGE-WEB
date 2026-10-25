@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<link rel="icon" href="data:,"/>
+<title>Religious, Spiritual and Esoteric Knowledge Web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f3ea; --panel:#fffdf6; --panel2:#efe8d8; --ink:#1e1b16; --muted:#6b6252; --line:#d8cfb8;
+  --gold:#b07d1f; --teal:#1f766e; --rust:#b5502a; --slate:#5b6b82; --accent:#7a3b1e;
+  --chip:#fff; --shadow:0 10px 30px rgba(30,27,22,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#14120e; --panel:#1e1b16; --panel2:#26221b; --ink:#f0e9d8; --muted:#b8ad96; --line:#3d372c; --chip:#26221b; --shadow:0 10px 30px rgba(0,0,0,.5); --gold:#d9a441; --teal:#4fb8ac; --rust:#e07a52; --slate:#93a6bd; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,sans-serif;line-height:1.5}
+a{color:var(--teal)}
+h1,h2,h3{font-family:Spectral,Georgia,serif;line-height:1.1;margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 16px 48px}
+header.top{padding:18px 0 6px;border-bottom:2px solid var(--ink)}
+header.top p.lede{font-size:18px;color:var(--muted);max-width:760px;margin:10px 0 6px}
+h1{font-size:clamp(30px,5vw,52px);font-weight:700;letter-spacing:-.02em}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.stat{background:var(--panel);border:1px solid var(--line);padding:8px 12px;border-radius:999px;font-size:14px}
+.stat b{font-family:Spectral,serif;font-size:18px}
+.controls{position:sticky;top:0;z-index:20;background:var(--bg);padding:12px 0;border-bottom:1px solid var(--line)}
+.controls .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.controls .row:last-child{margin-bottom:0}
+label.lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-right:2px}
+input[type=search],select{padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;min-height:42px}
+input[type=search]{flex:1;min-width:180px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:8px 13px;border-radius:999px;min-height:38px}
+button:hover{border-color:var(--ink)}
+button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+button.dot::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:7px;vertical-align:middle}
+.legend{font-size:13px;color:var(--muted)}
+.main{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:16px;align-items:start}
+@media(max-width:900px){.main{grid-template-columns:1fr}}
+.graphbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.graphbox .bar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--panel2);font-size:13px}
+#graph{width:100%;height:620px;display:block;touch-action:none;background:radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--gold) 9%, transparent), transparent 62%)}
+@media(max-width:700px){#graph{height:480px}}
+#graph text{font-family:"Source Sans 3",sans-serif;pointer-events:none}
+.edge{stroke-width:1.6;fill:none;cursor:pointer}
+.edge:hover{stroke-width:3}
+.edge.dim,.node.dim{opacity:.12}
+.edge.hl{stroke-width:3.4 !important;opacity:1}
+.node{cursor:pointer}
+.node circle{stroke:var(--panel);stroke-width:2}
+.node.sel circle{stroke:var(--ink);stroke-width:3}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:18px;position:sticky;top:118px;max-height:calc(100vh - 134px);overflow:auto}
+@media(max-width:900px){.panel{position:static;max-height:none}}
+.panel .kind{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.panel h2{font-size:28px;margin:6px 0 8px}
+.panel p{margin:0 0 12px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.meta span{font-size:12.5px;background:var(--panel2);border:1px solid var(--line);padding:4px 8px;border-radius:999px}
+.panel h3{font-size:17px;margin:18px 0 8px;border-top:1px solid var(--line);padding-top:14px}
+.connlist{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.connlist button{width:100%;text-align:left;border-radius:8px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.connlist small{color:var(--muted);white-space:nowrap}
+.sources{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sources li{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+.sources a{font-weight:700;text-decoration:none}
+.sources a:hover{text-decoration:underline}
+.sources small{display:block;color:var(--muted)}
+.trace{display:grid;gap:8px}
+.trace select{width:100%}
+.pathsteps{margin:8px 0 0;padding-left:20px}
+.pathsteps li{margin-bottom:6px}
+.threads{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:26px}
+.thread{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--c,#b07d1f);border-radius:10px;padding:16px}
+.thread h3{font-size:20px;margin-bottom:7px}
+.thread p{color:var(--muted);margin:0 0 10px;font-size:15px}
+.thread button{font-size:14px}
+section.block{margin-top:34px}
+section.block>h2{font-size:30px;margin-bottom:6px}
+section.block>p{color:var(--muted);max-width:760px;margin:0 0 14px}
+.indexgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.indexcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:left;width:100%}
+.indexcard b{font-family:Spectral,serif;font-size:17px;display:block}
+.indexcard span{font-size:13px;color:var(--muted)}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+.sr{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <h1>One human quest, many maps of it.</h1>
+  <p class="lede">An explorable web of religions, myths, philosophies, ancient civilizations, mystery schools, occult traditions and magick — who taught whom, which ideas travelled, where traditions blended, and where distant cultures arrived at strikingly similar answers. From Sumer and the Maya to Eleusis and Mithras, John Dee, the Golden Dawn and chaos magic, every figure, idea and link carries research sources you can open and check.</p>
+  <div class="stats">
+    <span class="stat"><b id="stNodes">–</b> nodes</span>
+    <span class="stat"><b id="stEdges">–</b> connections</span>
+    <span class="stat"><b>4</b> kinds of link</span>
+    <span class="stat"><b>9</b> families of knowledge</span>
+  </div>
+</header>
+
+<div class="controls" role="region" aria-label="Web controls">
+  <div class="row">
+    <input type="search" id="search" placeholder="Search — try “magick”, “Maya”, “Eleusis”, “Mithraism”, “Sumer”, “Golden Dawn”…" aria-label="Search the web">
+    <button class="primary" id="surprise">✦ Surprise me</button>
+    <button id="reset">Reset view</button>
+  </div>
+  <div class="row" id="domainFilters"><span class="lbl">Family</span></div>
+  <div class="row" id="typeFilters"><span class="lbl">Link</span></div>
+  <div class="row legend">Drag to pan · scroll or pinch to zoom · drag a node to move it · tap a node or a line to read its story and sources.</div>
+</div>
+
+<div class="main">
+  <div class="graphbox">
+    <div class="bar"><span id="graphStatus">Showing the whole web</span><span>● size = number of connections</span></div>
+    <svg id="graph" viewBox="0 0 1200 760" role="img" aria-label="Network graph of religious, spiritual, mythical, philosophical and esoteric knowledge"></svg>
+  </div>
+
+  <aside class="panel" id="panel" aria-live="polite"></aside>
+</div>
+
+<section class="block">
+  <h2>Threads to follow</h2>
+  <p>Seven journeys through the web. Tap one to light up its path in the graph.</p>
+  <div class="threads" id="threads"></div>
+</section>
+
+<section class="block">
+  <h2>Trace a path between any two ideas</h2>
+  <p>Pick a start and an end — the web will find the shortest chain of connections between them, with the source for every hop.</p>
+  <div class="main" style="margin-top:0">
+    <div class="panel" style="position:static;max-height:none">
+      <div class="trace">
+        <label>From <select id="fromSel"></select></label>
+        <label>To <select id="toSel"></select></label>
+        <button class="primary" id="traceBtn">Find the chain</button>
+        <div id="traceOut"></div>
+      </div>
+    </div>
+    <div class="panel" style="position:static;max-height:none">
+      <h3 style="border:0;padding:0;margin-top:0">How to read the link colours</h3>
+      <p><b style="color:var(--gold)">Lineage</b> — historical descent or documented influence: one tradition, teacher or text genuinely grew out of another.</p>
+      <p><b style="color:var(--teal)">Teaching</b> — a figure, text or practice that carries an idea: the Buddha and nirvana, the Torah and Judaism.</p>
+      <p><b style="color:var(--slate)">Parallel</b> — dashed. Distant cultures reaching a similar idea independently: flood myths, dying-and-rising gods, golden rules.</p>
+      <p><b style="color:var(--rust)">Fusion</b> — syncretism: two streams deliberately blended, as in Sikhism, Theosophy, Wicca or Zen.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <h2>Full index</h2>
+  <p>Every node in the web, alphabetically. Tap any card to open it in the graph — its research links are in its detail view.</p>
+  <div class="indexgrid" id="indexGrid"></div>
+</section>
+
+<footer>
+  <p><strong>About the sources.</strong> Each node and each connection lists its own research links in its detail view — chiefly Encyclopaedia Britannica, the Stanford Encyclopedia of Philosophy, the Internet Encyclopedia of Philosophy, Wikipedia, and primary texts at Sacred-Texts and Project Gutenberg. “Parallel” links are comparative observations made by scholars of religion, not claims that one culture copied another. Traditions are described as their adherents and historians present them; inclusion is not endorsement of any teaching.</p>
+</footer>
+</div>
+
+<script>
+/* ---------- helpers for sources ---------- */
+var W=function(slug,label){return {label:(label||("Wikipedia — "+slug.replace(/_/g," "))), url:"https://en.wikipedia.org/wiki/"+slug, note:"Encyclopedia entry"};};
+var B=function(slug,label){return {label:(label||("Britannica — "+slug.replace(/-/g," "))), url:"https://www.britannica.com/topic/"+slug, note:"Encyclopaedia Britannica"};};
+var SEP=function(slug,label){return {label:(label||("Stanford Encyclopedia — "+slug.replace(/-/g," "))), url:"https://plato.stanford.edu/entries/"+slug+"/", note:"Stanford Encyclopedia of Philosophy — peer-reviewed"};};
+var IEP=function(slug,label){return {label:(label||("Internet Encyclopedia — "+slug)), url:"https://iep.utm.edu/"+slug+"/", note:"Internet Encyclopedia of Philosophy — peer-reviewed"};};
+var ST=function(path,label){return {label:(label||"Sacred-Texts archive"), url:"https://sacred-texts.com/"+path, note:"Primary texts in translation — Internet Sacred Text Archive"};};
+
+/* ---------- nodes: id, name, domain, kind, era, blurb, sources ---------- */
+var DOMAINS={
+ abrahamic:{label:"Abrahamic & Persian",color:"#b07d1f"},
+ dharmic:{label:"Dharmic (India)",color:"#b5502a"},
+ east:{label:"East Asian",color:"#1f766e"},
+ philosophy:{label:"Philosophy",color:"#5b6b82"},
+ mythic:{label:"Mythic Worlds",color:"#7a5aa0"},
+ anciv:{label:"Ancient Civilizations",color:"#96613a"},
+ mystery:{label:"Mystery Schools",color:"#7d3c5e"},
+ esoteric:{label:"Esoteric, Occult & Magick",color:"#8a6d1f"},
+ universal:{label:"Shared Human Ideas",color:"#3f7d4e"}
+};
+var NODES=[
+["judaism","Judaism","abrahamic","Tradition","c. 13th c. BCE –","Covenant, one God, Torah and a people’s law and story — the root tradition from which Christianity and, in part, Islam grow.",[B("Judaism"),W("Judaism")]],
+["christianity","Christianity","abrahamic","Tradition","1st c. CE –","Centred on Jesus as Christ and saviour; grew from Second Temple Judaism into the world’s largest religion.",[B("Christianity"),W("Christianity")]],
+["islam","Islam","abrahamic","Tradition","7th c. CE –","Submission to the one God (Allah), revealed to Muhammad in the Qur’an; honours Abraham, Moses and Jesus as prophets.",[B("Islam"),W("Islam")]],
+["zoroastrianism","Zoroastrianism","abrahamic","Tradition","c. 1000 BCE –","Persia’s ancient faith of Ahura Mazda, cosmic good-versus-evil, fire temples and a final judgement — a plausible influence on later Abrahamic ideas of heaven, hell and angels.",[B("Zoroastrianism"),W("Zoroastrianism")]],
+["moses","Moses","abrahamic","Figure","13th c. BCE (trad.)","Prophet who leads Israel from Egypt and receives the Torah on Sinai — revered in Judaism, Christianity and Islam alike.",[W("Moses"),B("Moses")]],
+["jesus","Jesus","abrahamic","Figure","c. 4 BCE – 30 CE","Jewish teacher and, for Christians, incarnate Son of God; in Islam a prophet; his parables, death and reported resurrection reshape the ancient world.",[B("Jesus"),W("Jesus")]],
+["muhammad","Muhammad","abrahamic","Figure","570–632 CE","Final prophet in Islam, recipient of the Qur’an; statesman of Medina and unifier of Arabia.",[B("Muhammad"),W("Muhammad")]],
+["torah","Torah","abrahamic","Text","compiled c. 6th–5th c. BCE","The first five books of the Hebrew Bible — creation, exodus, law and covenant; Judaism’s foundational text.",[W("Torah"),ST("jud/index.htm","Sacred-Texts — Tanakh in translation")]],
+["quran","Qur’an","abrahamic","Text","7th c. CE","Islam’s scripture, recited to Muhammad over 23 years; read in Arabic as the literal word of God.",[B("Quran"),W("Quran")]],
+["kabbalah","Kabbalah","abrahamic","Esoteric teaching","12th c. CE –","Jewish mysticism: the ten sefirot, God’s hidden life, and the Zohar — later absorbed into Western occultism.",[W("Kabbalah"),B("Kabbalah")]],
+["sufism","Sufism","abrahamic","Mystical path","8th c. CE –","Islam’s mystical dimension — dhikr, poetry (Rumi), and direct union with the Beloved beyond legal form.",[B("Sufism"),W("Sufism")]],
+["gnosticism","Gnosticism","abrahamic","Movement","1st–3rd c. CE","Early Christian-era movements teaching that secret knowledge (gnosis) frees the divine spark from a flawed material world ruled by a lesser creator.",[W("Gnosticism"),IEP("gnostics","IEP — Gnosticism")]],
+
+["hinduism","Hinduism","dharmic","Tradition","c. 1500 BCE –","A vast family of Indian traditions — many gods, one underlying reality (Brahman), dharma, karma and liberation.",[B("Hinduism"),W("Hinduism")]],
+["buddhism","Buddhism","dharmic","Tradition","5th c. BCE –","From the Buddha’s awakening: suffering has a cause and a cure — the Eightfold Path to nirvana.",[B("Buddhism"),W("Buddhism")]],
+["jainism","Jainism","dharmic","Tradition","6th c. BCE –","Mahavira’s path of radical non-violence (ahimsa) toward every living soul, and liberation by ascetic effort.",[B("Jainism"),W("Jainism")]],
+["sikhism","Sikhism","dharmic","Tradition","15th c. CE –","Founded by Guru Nanak in Punjab: one God, equality, service (seva) — born in a land where Hindu and Muslim worlds met.",[B("Sikhism"),W("Sikhism")]],
+["buddha","The Buddha","dharmic","Figure","5th c. BCE","Siddhartha Gautama, who renounced a palace, awoke under the Bodhi Tree, and taught the Middle Way for 45 years.",[B("Buddha"),W("The_Buddha")]],
+["krishna","Krishna","dharmic","Figure / Deity","epic tradition","God as playful hero, lover and charioteer — speaker of the Bhagavad Gita and focus of passionate bhakti devotion.",[W("Krishna"),B("Krishna")]],
+["karma","Karma","dharmic","Concept","Upanishadic era –","Action and its fruit: what you do shapes what you become, in this life and the next. Travelled west with Buddhism and, later, modern spirituality.",[W("Karma"),B("Karma")]],
+["dharma","Dharma","dharmic","Concept","Vedic era –","Duty, law, the way things hold together — in Hinduism a life-task, in Buddhism the teaching itself.",[W("Dharma"),B("Dharma")]],
+["samsara","Samsara","dharmic","Concept","Upanishadic era –","The wheel of rebirth — endless cycling through lives driven by karma and ignorance, which every Indian liberation path seeks to exit.",[W("Samsara"),B("Samsara")]],
+["nirvana","Nirvana","dharmic","Concept","5th c. BCE –","The blowing-out of craving and rebirth — Buddhism’s goal, and in a different key, Jain and Hindu liberation too.",[W("Nirvana"),B("Nirvana")]],
+["yoga","Yoga","dharmic","Practice","c. 5th c. BCE –","‘Yoking’ body and mind — from Patanjali’s meditation system to the global studio practice of today.",[B("Yoga"),W("Yoga")]],
+["tantra","Tantra","dharmic","Practice / Teaching","5th c. CE –","Esoteric Hindu and Buddhist systems using mantra, mandala and the body itself as the vehicle of awakening — much misunderstood in the West.",[W("Tantra"),B("Tantra")]],
+["ahimsa","Ahimsa","dharmic","Concept","6th c. BCE –","Non-harming toward all beings — Jainism’s supreme vow, Gandhi’s political weapon, and a root of modern vegetarian ethics.",[W("Ahimsa"),B("Ahimsa")]],
+
+["daoism","Daoism (Taoism)","east","Tradition","4th c. BCE –","Follow the Dao — the way that can be named is not the eternal Way. Water, softness, and going with the grain of things.",[B("Taoism"),W("Taoism")]],
+["confucianism","Confucianism","east","Tradition / Philosophy","5th c. BCE –","Harmony through ritual, family duty, education and humane government — the ethical spine of East Asia for two millennia.",[B("Confucianism"),SEP("confucius")]],
+["shinto","Shinto","east","Tradition","ancient Japan –","The way of the kami — shrines, purity, festivals and reverence for nature and ancestors in Japan.",[B("Shinto"),W("Shinto")]],
+["laozi","Laozi","east","Figure","6th c. BCE (trad.)","Legendary sage credited with the Daodejing — the old master who rides an ox out of a declining civilisation.",[W("Laozi"),SEP("laozi")]],
+["confucius","Confucius","east","Figure","551–479 BCE","Teacher of ritual propriety, filial piety and the humane ruler; his Analects shaped East Asian ethics.",[B("Confucius"),SEP("confucius")]],
+["yinyang","Yin–Yang","east","Concept","3rd c. BCE –","Opposites that contain and complete each other — dark/light, soft/firm — the pattern beneath Daoist and Chinese medical thought.",[W("Yin_and_yang"),IEP("yin-yang","IEP — Yin-Yang")]],
+["wuwei","Wu Wei","east","Concept","4th c. BCE –","Effortless action — acting so in tune with things that nothing is forced. Daoism’s answer to anxious striving.",[W("Wu_wei"),SEP("daoism")]],
+["zen","Zen","east","School","7th c. CE – (China/Japan)","Buddhism fused with Daoism: meditation (zazen), koans, and the claim that awakening is sudden and wordless.",[B("Zen"),W("Zen")]],
+["iching","I Ching","east","Text / Practice","c. 9th c. BCE –","The Book of Changes — 64 hexagrams cast by yarrow or coins, read as counsel; beloved of Confucians, Daoists, Jung and the 1960s.",[W("I_Ching"),B("I_Ching")]],
+
+["socrates","Socrates","philosophy","Figure","470–399 BCE","Athens’ questioner — knows that he does not know; executed for impiety, he becomes philosophy’s martyr.",[SEP("socrates"),W("Socrates")]],
+["plato","Plato","philosophy","Figure","428–348 BCE","Forms beyond the senses, the soul’s immortality, the philosopher-king — and, through Neoplatonism, a bridge into Christian, Islamic and occult thought.",[SEP("plato"),W("Plato")]],
+["aristotle","Aristotle","philosophy","Figure","384–322 BCE","Plato’s pupil who built logic, ethics of the golden mean, and a science of causes that medieval Judaism, Christianity and Islam all adopted.",[SEP("aristotle"),W("Aristotle")]],
+["pythagoras","Pythagoras","philosophy","Figure","c. 570–495 BCE","Number as the secret of the cosmos — and a religious brotherhood practising vegetarianism, silence and reincarnation beliefs.",[SEP("pythagoras"),W("Pythagoras")]],
+["stoicism","Stoicism","philosophy","School","3rd c. BCE –","Virtue is the only good; accept what you cannot control. Seneca, Epictetus and Marcus Aurelius — revived today as a life philosophy.",[SEP("stoic"),W("Stoicism")]],
+["epicureanism","Epicureanism","philosophy","School","3rd c. BCE –","Simple pleasures, friendship, and freedom from fear of gods and death — Epicurus’ garden school.",[SEP("epicurus"),W("Epicureanism")]],
+["neoplatonism","Neoplatonism","philosophy","School","3rd c. CE –","Plotinus’ ladder from the material world up to the One — the philosophy that let pagan, Christian, Jewish and Muslim mystics speak one language.",[SEP("neoplatonism"),W("Neoplatonism")]],
+["spinoza","Spinoza","philosophy","Figure","1632–1677","‘God or Nature’ — one substance, everything in it. Excommunicated by his synagogue, later claimed by pantheists and Einstein alike.",[SEP("spinoza"),W("Baruch_Spinoza")]],
+["nietzsche","Nietzsche","philosophy","Figure","1844–1900","Announces the ‘death of God’, attacks herd morality, proposes self-overcoming — a prophet against religion in prophetic style.",[SEP("nietzsche"),W("Friedrich_Nietzsche")]],
+["existentialism","Existentialism","philosophy","Movement","19th–20th c.","Existence before essence: Kierkegaard’s leap of faith to Sartre’s atheist freedom — meaning must be made, not found.",[SEP("existentialism"),W("Existentialism")]],
+["jung","Carl Jung","philosophy","Figure","1875–1961","Archetypes, the collective unconscious, synchronicity — the psychiatrist who treated myths and alchemy as maps of the psyche.",[W("Carl_Jung"),B("Carl_Jung")]],
+
+["greekmyth","Greek Myth","mythic","Myth cycle","8th c. BCE –","Olympians, heroes, hubris and fate — Hesiod and Homer’s stories, retold ever since as psychology, drama and star-names.",[B("Greek_mythology"),W("Greek_mythology")]],
+["norsemyth","Norse Myth","mythic","Myth cycle","13th c. texts, older roots","Odin’s one-eyed wisdom, Thor’s hammer, and Ragnarök — a world that ends in fire and is reborn green.",[B("Norse_mythology"),W("Norse_mythology")]],
+["egyptmyth","Egyptian Myth","mythic","Myth cycle","c. 2500 BCE –","Ra’s solar boat, Isis reassembling Osiris, the weighing of the heart — three thousand years of afterlife imagination.",[W("Ancient_Egyptian_religion"),B("Egyptian_religion")]],
+["mesomyth","Mesopotamian Myth","mythic","Myth cycle","c. 2100 BCE –","The oldest written myths: Gilgamesh, the great flood, gods who make humans to do their work.",[W("Mesopotamian_religion"),B("Mesopotamian_religion")]],
+["zeus","Zeus","mythic","Deity","Greek tradition","Sky-father and thunderer, king of Olympus — the Indo-European sky god in Greek dress.",[W("Zeus"),B("Zeus")]],
+["athena","Athena","mythic","Deity","Greek tradition","Born armed from Zeus’ head — wisdom, craft and the defended city; Athens’ patron.",[W("Athena"),B("Athena")]],
+["apollo","Apollo","mythic","Deity","Greek tradition","Light, music, prophecy at Delphi and healing — the god later ages made the emblem of reason and measure.",[W("Apollo"),B("Apollo")]],
+["persephone","Persephone","mythic","Deity","Greek tradition","Abducted to the underworld, returning each spring — her myth explains the seasons and anchors the Eleusinian Mysteries.",[W("Persephone"),B("Persephone")]],
+["odin","Odin","mythic","Deity","Norse tradition","One-eyed seeker who hangs on the world-tree for runes and wisdom — chief of the Norse gods, fated to fall at Ragnarök.",[W("Odin"),B("Odin")]],
+["thor","Thor","mythic","Deity","Norse tradition","Thunder god with hammer Mjölnir, defender of gods and farmers against the giants.",[W("Thor"),B("Thor")]],
+["isis","Isis","mythic","Deity","Egyptian tradition","Great magician and mourning wife who restores Osiris; her cult spreads across the Roman world as a universal mother goddess.",[W("Isis"),B("Isis")]],
+["osiris","Osiris","mythic","Deity","Egyptian tradition","Murdered, dismembered and reborn as king of the dead — Egypt’s dying-and-rising god, template of the judged afterlife.",[W("Osiris"),B("Osiris")]],
+["gilgamesh","Gilgamesh","mythic","Figure / Text","c. 2100 BCE","Mesopotamia’s hero-king who seeks immortality after his friend’s death and finds a flood story far older than Genesis.",[W("Epic_of_Gilgamesh"),B("Gilgamesh")]],
+["underworld","The Underworld","mythic","Concept","global","Where the dead go: Sheol, Hades, Duat, Hel, Naraka — every culture maps it, and heroes from Gilgamesh to Orpheus try to return.",[W("Underworld"),B("Underworld")]],
+
+["hermeticism","Hermeticism","esoteric","Teaching","2nd c. CE –","‘As above, so below.’ Writings ascribed to Hermes Trismegistus blending Egyptian, Greek and Jewish wisdom — fuel for Renaissance magic and alchemy.",[W("Hermeticism"),B("Hermeticism")]],
+["alchemy","Alchemy","esoteric","Practice","Hellenistic era –","Turning lead to gold — and, in parallel, the soul to perfection. Practised in Egypt, China, the Islamic world and Europe; mother of chemistry.",[W("Alchemy"),B("Alchemy")]],
+["astrology","Astrology","esoteric","Practice","Babylonian era –","The heavens as a readable text of fate and character — born in Babylon, systematised in Greece, still cast daily worldwide.",[B("Astrology"),W("Astrology")]],
+["tarot","Tarot","esoteric","Practice","15th c. Italy; occult use 18th c.","A card game turned oracle: 22 Major Arcana mapping fool’s journey, judgement and world — redesigned by occultists, read everywhere now.",[W("Tarot"),B("Tarot")]],
+["theosophy","Theosophy","esoteric","Movement","1875 –","Blavatsky’s synthesis: Eastern karma and reincarnation meet Western occultism in a claimed ancient wisdom — the seedbed of much modern spirituality.",[W("Theosophy"),B("Theosophy")]],
+["blavatsky","Helena Blavatsky","esoteric","Figure","1831–1891","Co-founder of the Theosophical Society, author of The Secret Doctrine; claimed hidden masters in Tibet taught her the root doctrines of all religions.",[W("Helena_Blavatsky"),B("Helena_Petrovna_Blavatsky","Britannica — Helena Blavatsky")]],
+["crowley","Aleister Crowley","esoteric","Figure","1875–1947","‘Do what thou wilt’ — Golden Dawn magus, founder of Thelema, mountaineer and self-styled Great Beast; occultism’s most notorious modern figure.",[W("Aleister_Crowley"),B("Aleister_Crowley")]],
+["rosicrucianism","Rosicrucianism","esoteric","Movement","1614 –","Manifestos announce a secret brotherhood of Christian alchemists reforming the world — real or hoax, it launches centuries of secret-society imagination.",[W("Rosicrucianism"),B("Rosicrucianism")]],
+["freemasonry","Freemasonry","esoteric","Fraternity","1717 –","Ritual brotherhood using builders’ symbols for moral self-fashioning — historically entangled with Enlightenment, Kabbalah and conspiracy theories alike.",[B("Freemasonry"),W("Freemasonry")]],
+["wicca","Wicca","esoteric","Movement","1950s –","Gerald Gardner’s revival of pagan witchcraft: a Goddess and God, seasonal wheels, and ‘harm none’ — now a recognised modern religion.",[W("Wicca"),B("Wicca")]],
+["chakras","Chakras","esoteric","Concept","Tantric traditions –","Energy wheels along the spine, from Tantric texts through Theosophy into yoga studios and rainbow charts worldwide.",[W("Chakra"),B("Chakra")]],
+["sacredgeo","Sacred Geometry","esoteric","Concept","ancient –","Circles, golden ratios and mandalas read as the blueprint of creation — from Pythagorean number-lore to temple plans and New Age design.",[W("Sacred_geometry")]],
+["akashic","Akashic Records","esoteric","Concept","19th c. Theosophy","A cosmic archive recording every soul’s journey, readable by the adept — Theosophy’s coinage from the Sanskrit akasha (ether/space).",[W("Akashic_records")]],
+
+["monotheism","Monotheism","universal","Concept","c. 14th c. BCE –","One God only — from Akhenaten’s short-lived Aten cult and Zoroastrian and Israelite developments to the Abrahamic mainstream.",[W("Monotheism"),B("Monotheism")]],
+["soul","The Soul","universal","Concept","global, ancient","The part of you that is really you — weighed in Egypt, argued by Plato, saved or liberated in nearly every tradition here.",[SEP("ancient-theories-soul","Stanford Encyclopedia — Ancient Theories of Soul"),W("Soul")]],
+["afterlife","Afterlife","universal","Concept","global, ancient","Heaven, hell, rebirth, ancestors, oblivion — what, if anything, follows death is religion’s oldest question.",[W("Afterlife"),B("Afterlife")]],
+["reincarnation","Reincarnation","universal","Concept","Upanishadic era –","Rebirth of the soul — central in Indian traditions, taught by Pythagoras and Orphics, embraced by Theosophy and much modern spirituality.",[W("Reincarnation"),B("Reincarnation")]],
+["meditation","Meditation","universal","Practice","ancient –","Sustained attention as transformation — Hindu and Buddhist disciplines, Sufi and Christian contemplation, Daoist stillness.",[W("Meditation"),B("Meditation")]],
+["mindfulness","Mindfulness","universal","Practice / Concept","Buddhist roots; 1979 – clinical","Sati — present-moment attention drawn from Buddhist practice and, via Jon Kabat-Zinn, repackaged as secular clinical therapy (MBSR).",[W("Mindfulness"),B("Mindfulness")]],
+["mysticism","Mysticism","universal","Concept","global","Direct, unmediated experience of the ultimate — Sufis, Kabbalists, Christian contemplatives and Zen masters describe strikingly similar peaks in different languages.",[SEP("mysticism"),W("Mysticism")]],
+["enlightenment","Awakening / Enlightenment","universal","Concept","global","Waking up from ignorance — Buddhist bodhi, Hindu moksha, Gnostic gnosis, and a philosophical era that borrowed the word for reason.",[W("Enlightenment_(spiritual)"),B("Enlightenment")]],
+["ritual","Ritual","universal","Concept","global","Repeated sacred action — sacrifice, festival, prayer, pilgrimage — that makes belief bodily and communal.",[W("Ritual"),B("Ritual")]],
+["pilgrimage","Pilgrimage","universal","Practice","global, ancient","The journey as prayer: Hajj to Mecca, Kumbh Mela, Camino de Santiago, Shikoku’s 88 temples — travel that transforms the traveller.",[W("Pilgrimage"),B("Pilgrimage")]],
+
+["sumer","Sumer","anciv","Civilization","c. 4500–1900 BCE","Southern Mesopotamia’s first cities — Uruk, Ur, Eridu — invent writing (cuneiform), the wheel, law codes and temple ziggurats. Much of the oldest mythology in this web starts here.",[W("Sumer"),B("Sumer")]],
+["egyptciv","Ancient Egypt","anciv","Civilization","c. 3100–30 BCE","Three thousand years of pharaohs, pyramids, hieroglyphs and temple priesthoods along the Nile — the civilization behind Egyptian myth, Hermeticism’s claimed homeland, and the Isiac mysteries.",[W("Ancient_Egypt"),B("ancient-Egypt")]],
+["indus","Indus Valley Civilization","anciv","Civilization","c. 3300–1300 BCE","Harappa and Mohenjo-daro: planned cities, drains, seals — and a script still undeciphered. Possible roots of later Indian religion; a famous seal seems to show a seated, horned figure in a yogic pose, though scholars dispute the reading.",[W("Indus_Valley_Civilisation"),B("Indus-civilization")]],
+["maya","Maya Civilization","anciv","Civilization","c. 2000 BCE – 1500s CE","Mesoamerican city-states with the Americas’ most complete writing system, exact calendars and astronomy, pyramid temples, and the Popol Vuh’s journey through the underworld Xibalba.",[W("Maya_civilization"),B("Maya-civilization")]],
+["aztec","Aztec (Mexica) World","anciv","Civilization","1325–1521 CE","Tenochtitlan, a city on a lake larger than London of its day: a cosmos held together — in Mexica belief — by ritual and sacrifice to the sun god Huitzilopochtli, and a rich calendar of festivals.",[W("Aztecs"),B("Aztec")]],
+["inca","Inca & Andean World","anciv","Civilization","1438–1533 CE","The largest empire in the pre-Columbian Americas: Inti the sun, Pachamama the earth mother, mountain shrines (apus), and Machu Picchu aligned to solstices.",[W("Inca_Empire"),B("Inca")]],
+["phoenicia","Phoenicians","anciv","Civilization","c. 1500–300 BCE","Levantine sea-traders (Tyre, Sidon, Byblos, Carthage) who spread the alphabet to Greece and sailed the whole Mediterranean — neighbours and trading partners of ancient Israel.",[W("Phoenicia"),B("Phoenicia")]],
+["celts","Celtic World","anciv","Civilization","c. 800 BCE – Roman era","Iron Age peoples across Europe — Gauls, Britons, Irish — with druid priest-scholars, sacred groves, seasonal fire festivals (Samhain, Beltane) later claimed as roots by modern paganism.",[W("Celts"),B("Celt")]],
+["minoan","Minoan Crete","anciv","Civilization","c. 3000–1100 BCE","Europe’s first great civilization: Knossos’ labyrinthine palace, bull-leaping frescoes, snake-goddess figurines — the Bronze Age world behind Greek myths of the Minotaur and Daedalus.",[W("Minoan_civilization"),B("Minoan-civilization")]],
+["shangzhou","Shang & Zhou China","anciv","Civilization","c. 1600–256 BCE","Bronze-age China: oracle bones cracked for royal divination (the ancestors of Chinese writing), ancestor veneration, and the Mandate of Heaven — the soil from which Confucianism, Daoism and the I Ching grow.",[W("Shang_dynasty"),W("Zhou_dynasty")]],
+["olmec","Olmec World","anciv","Civilization","c. 1500–400 BCE","Mesoamerica’s earliest complex culture — colossal stone heads, early calendars and ballgames; often called the ‘mother culture’ of the Maya and Aztec worlds, though how direct the descent was is debated.",[W("Olmecs"),B("Olmec-civilization")]],
+["druids","Druids","anciv","Priesthood","Iron Age – Roman era","Priests, judges and lore-keepers of the Celtic world, described by Caesar and Pliny: oak groves, mistletoe, memorised verse-lore, and — in Roman accounts — sacrifice. Revived from the 18th century as modern Druidry.",[W("Druid"),B("Druid")]],
+["shamanism","Shamanism","anciv","Practice","Paleolithic roots –","The world’s oldest traceable religious role: the specialist who journeys in trance to spirit worlds to heal, divine and escort the dead — from Siberian and Central Asian shamans to Indigenous traditions worldwide.",[W("Shamanism"),B("Shamanism")]],
+
+["magick","Magick","esoteric","Practice / Concept","term popularised 1900s –","Magic with a ‘k’ — Crowley’s spelling to mark deliberate, willed change worked through ritual, symbol and imagination, distinct from stage conjuring. The word now labels the whole modern Western magical revival.",[W("Magick_(Thelema)","Wikipedia — Magick (Thelema)"),W("Magic_(supernatural)","Wikipedia — Magic (supernatural)")]],
+["ceremonial","Ceremonial Magic","esoteric","Practice","Renaissance –","Formal ritual magic: circles, wands, robes, divine names and precise invocations, built from grimoires, Kabbalah and Hermeticism — the working system behind the Golden Dawn and most modern orders.",[W("Ceremonial_magic"),W("Ritual_magic","Wikipedia — Ritual magic")]],
+["chaosmagic","Chaos Magic","esoteric","Movement","1970s –","Postmodern magick: belief itself is a tool to be picked up and put down, results matter more than doctrine, and the hand-drawn sigil replaces the temple. Born in 1970s England with Peter Carroll and Ray Sherwin.",[W("Chaos_magic")]],
+["goldendawn","Golden Dawn","esoteric","Order","1888 –","The Hermetic Order of the Golden Dawn — Victorian London’s great magical order (Yeats was a member), fusing Kabbalah, tarot, astrology, alchemy and Egyptian symbolism into graded initiations that still structure modern magick.",[W("Hermetic_Order_of_the_Golden_Dawn","Wikipedia — Hermetic Order of the Golden Dawn"),B("Golden-Dawn")]],
+["thelema","Thelema","esoteric","Teaching / Movement","1904 –","Crowley’s doctrine from The Book of the Law (1904): ‘Do what thou wilt shall be the whole of the Law’ — True Will, not licence, at its centre; practised today by the O.T.O. and independent Thelemites.",[W("Thelema"),B("Thelema")]],
+["johndee","John Dee","esoteric","Figure","1527–1608/09","Elizabeth I’s court astrologer, mathematician and imperial visionary who, with Edward Kelley, recorded years of ‘angelic’ conversations — the source of Enochian magic — while also advancing navigation and science.",[W("John_Dee"),B("John-Dee")]],
+["agrippa","Heinrich Cornelius Agrippa","esoteric","Figure","1486–1535","Author of Three Books of Occult Philosophy (1533), the Renaissance era’s great synthesis of magic — natural, celestial and ceremonial — drawing on Kabbalah, Hermeticism and Neoplatonism.",[W("Heinrich_Cornelius_Agrippa")]],
+["eliphlevi","Éliphas Lévi","esoteric","Figure","1810–1875","French occultist who revived magic for the modern age: Dogme et Rituel de la Haute Magie, the famous goat-headed Baphomet image, and the tarot–Kabbalah correspondences the Golden Dawn inherited.",[W("Eliphas_L%C3%A9vi","Wikipedia — Éliphas Lévi")]],
+["paracelsus","Paracelsus","esoteric","Figure","1493–1541","Swiss physician-alchemist who remade medicine with minerals and the doctrine of signatures — ‘the dose makes the poison’ — and wrote of elementals: gnomes, undines, sylphs and salamanders.",[W("Paracelsus"),B("Paracelsus")]],
+["enochian","Enochian Magic","esoteric","Practice","1580s –","The angelic system recorded by Dee and Kelley: a complete ‘Enochian’ language, calls (keys) and a hierarchy of angels and Aethyrs, later adopted and reworked by the Golden Dawn and Crowley.",[W("Enochian_magic"),W("Enochian")]],
+["grimoires","Grimoires","esoteric","Texts","medieval –","Handbooks of magic — the Key of Solomon, the Lesser Key (with its 72 demons), the Sworn Book of Honorius — listing spirits, seals, circles and conjurations. Copied in secret for centuries, printed for everyone today.",[W("Grimoire"),W("Key_of_Solomon")]],
+["witchcraft","Witchcraft","esoteric","Practice / History","ancient –","Folk magic, healing and cursing at village level — and the early-modern witch trials (c. 1450–1750) that made ‘witch’ an accusation. Modern witchcraft reclaims the word as a religion and craft.",[W("Witchcraft"),B("Witchcraft")]],
+["hoodoo","Hoodoo & Folk Magic","esoteric","Practice","19th c. –","African American folk magic of the rural South — roots, herbs, candles, mojo hands and Bible psalms worked together — distinct from Vodou religion, and one of many living folk-magic systems worldwide.",[W("Hoodoo_(folk_magic)","Wikipedia — Hoodoo (folk magic)")]],
+["necromancy","Necromancy","esoteric","Practice","ancient –","Calling up the dead for knowledge — from Odysseus and the Witch of Endor to medieval grimoires and Victorian séances. Long the most feared and forbidden branch of magic in law and scripture alike.",[W("Necromancy")]],
+["divination","Divination","esoteric","Practice","ancient –","Reading the hidden present and future: Roman augury, Babylonian liver omens, Chinese oracle bones, geomancy, scrying, palmistry — the practical parent of astrology, tarot and the I Ching alike.",[W("Divination"),B("Divination")]],
+["spiritualism","Spiritualism & Séance","esoteric","Movement","1848 –","Begins with the Fox sisters’ spirit-rappings in New York (1848): séances, mediums and spirit photography sweep the Victorian world, feed into Theosophy, and survive in Spiritualist churches today.",[W("Spiritualism_(movement)","Wikipedia — Spiritualism (movement)"),B("Spiritualism")]],
+["sigils","Sigils","esoteric","Practice / Concept","medieval –","Drawn seals that embody a spirit’s name — or, in modern practice, a condensed desire. From grimoire demon-seals through Austin Osman Spare to chaos magic’s favourite technique.",[W("Sigil")]],
+
+["mysteries","Mystery Traditions","mystery","Movement","c. 1500 BCE – 4th c. CE","The ancient world’s secret initiations: cults that admitted you by rite, swore you to silence, and promised a transformed relationship with death. What was revealed at Eleusis or in a Mithraeum stayed secret — which is why we still piece them together from hints.",[W("Greco-Roman_mysteries","Wikipedia — Greco-Roman mysteries"),B("Mystery-religion")]],
+["eleusis","Eleusinian Mysteries","mystery","Mystery cult","c. 1500 BCE – 392 CE","Greece’s most prestigious initiation, at Eleusis near Athens: the myth of Demeter and Persephone enacted over nine days, ending in a night revelation initiates never described. For nearly two thousand years, emperors and slaves alike sought its promise of a blessed afterlife.",[W("Eleusinian_Mysteries"),B("Eleusinian-Mysteries")]],
+["mithraism","Mithraism","mystery","Mystery cult","1st–4th c. CE","Roman soldiers’ and merchants’ cult of Mithras — born from rock, slayer of the bull — worshipped in cave-like temples (mithraea) through seven graded initiations, communal meals and no public scripture. Christianity’s closest mystery rival.",[W("Mithraism"),B("Mithraism")]],
+["orphism","Orphism","mystery","Mystery teaching","6th c. BCE –","Teachings ascribed to Orpheus, who charmed the underworld and returned: the soul is divine and imprisoned in the body (soma–sema), reborn through many lives, and freed by purity and initiation. Gold tablets buried with initiates gave directions for the afterlife.",[W("Orphism_(religion)","Wikipedia — Orphism (religion)"),W("Orphic_gold_tablets","Wikipedia — Orphic gold tablets")]],
+["pythbrother","Pythagorean Brotherhood","mystery","School / Brotherhood","c. 530 BCE –","Pythagoras’ community at Croton: initiates bound by silence, dietary rules and shared property, studying number, music and the soul’s transmigration — half philosophy school, half mystery cult, and the template for later secret orders.",[W("Pythagoreanism"),SEP("pythagoras")]],
+["dionysian","Dionysian Mysteries","mystery","Mystery cult","Greek–Roman era","Ecstatic rites of Dionysus — wine, dance, mountain frenzy (the maenads), and the promise that the god who is torn apart and returns can free his initiates from death’s fear. Euripides’ Bacchae is our great literary window.",[W("Dionysian_Mysteries"),W("Dionysus")]],
+["isiac","Isiac Mysteries","mystery","Mystery cult","Hellenistic–Roman era","Initiation into the mysteries of Isis, Egypt’s goddess exported across the Roman world. Apuleius’ Golden Ass gives the ancient world’s fullest first-person account of an initiation — veiled, joyful, and sworn to secrecy.",[W("Mysteries_of_Isis","Wikipedia — Mysteries of Isis"),W("Isis")]],
+["samothrace","Samothracian Mysteries","mystery","Mystery cult","Hellenistic–Roman era","Initiations on the island of Samothrace to the Great Gods (the Cabeiri) — sailors’ protectors, said to rescue the initiated at sea. Philip of Macedon met Olympias at its festival; its rites were ranked second only to Eleusis.",[W("Samothracian_religion","Wikipedia — Samothracian religion"),W("Samothrace")]],
+["cybele","Mysteries of Cybele & Attis","mystery","Mystery cult","Roman era","The Great Mother (Magna Mater), brought to Rome from Anatolia in 204 BCE: ecstatic music, self-castrating galli priests, and the spring festival of Attis — mourned dead, then rejoiced as restored.",[W("Cybele"),W("Attis")]],
+
+["christianmyst","Christian Mysticism","abrahamic","Mystical path","1st c. CE –","Direct experience of God inside Christianity: desert hermits, medieval visionaries, contemplative prayer and the ‘dark night’. Long nurtured in monastic life, periodically suspected by the Church it also inspired.",[W("Christian_mysticism"),B("Christian-mysticism")]],
+["eckhart","Meister Eckhart","abrahamic","Figure","c. 1260–c. 1328","Dominican preacher of radical sermons: the soul’s ‘spark’ is one with God beyond God. Some propositions were condemned after his death; his influence on German spirituality and modern readers is enormous.",[W("Meister_Eckhart"),SEP("eckhart","Stanford Encyclopedia — Meister Eckhart")]],
+["teresa","Teresa of Ávila","abrahamic","Figure","1515–1582","Spanish Carmelite reformer whose Interior Castle maps the soul’s journey through seven mansions to union with God — written under Inquisition scrutiny, now a Doctor of the Church and mysticism’s classic cartographer.",[W("Teresa_of_%C3%81vila","Wikipedia — Teresa of Ávila"),B("Saint-Teresa-of-Avila")]],
+["hesychasm","Hesychasm","abrahamic","Mystical practice","Byzantine era –","Orthodox stillness: monks of Mount Athos repeat the Jesus Prayer with breath and posture, seeking the uncreated light of Tabor. Defended by Gregory Palamas, condemned then vindicated in 14th-century councils.",[W("Hesychasm")]],
+["rumi","Rumi","abrahamic","Figure","1207–1273","Jalal al-Din Rumi, Sufi poet of Konya whose Masnavi and whirling sama’ made him Islam’s most-read mystical voice — and today one of the world’s best-selling poets in English translation.",[W("Rumi"),B("Rumi")]],
+["ibnarabi","Ibn Arabi","abrahamic","Figure","1165–1240","Andalusian Sufi metaphysician, ‘the Greatest Master’: the unity of being (wahdat al-wujud), the Perfect Human, and journeys through the imaginal world — system-builder of later Sufi philosophy.",[W("Ibn_Arabi")]],
+["hasidism","Hasidism","abrahamic","Movement","1730s –","Jewish revival founded by the Baal Shem Tov in Ukraine: joy, song, storytelling and the tzaddik (righteous leader) bring Kabbalah’s sparks to ordinary people. Modern Hasidic dynasties descend from it.",[W("Hasidic_Judaism"),B("Hasidism")]],
+["zohar","The Zohar","abrahamic","Text","13th c. Spain","Kabbalah’s central book — an Aramaic mystical commentary on Torah, presented as the work of a 2nd-century sage, published by Moses de León. Its symbolic world of sefirot reshaped Jewish spirituality.",[W("Zohar"),B("Zohar")]],
+["luria","Isaac Luria","abrahamic","Figure","1534–1572","‘The Ari’ of Safed, whose disciples recorded a new Kabbalah: creation by divine contraction (tzimtzum), shattered vessels, scattered sparks, and the world’s repair (tikkun) by human action.",[W("Isaac_Luria"),W("Lurianic_Kabbalah","Wikipedia — Lurianic Kabbalah")]],
+["sefirot","Sefirot & Tree of Life","abrahamic","Concept","Kabbalistic teaching","The ten emanations through which the infinite God (Ein Sof) reaches the world — crown, wisdom, understanding down to kingdom — drawn as the Tree of Life, the diagram at the heart of Kabbalah and later Western occultism.",[W("Sefirot"),W("Tree_of_Life_(Kabbalah)","Wikipedia — Tree of Life (Kabbalah)")]],
+["bhakti","Bhakti","dharmic","Movement / Path","7th c. –","Devotional love of God in Hinduism — Tamil poet-saints, Krishna devotion, Mirabai’s songs: emotion and surrender as a path open to all castes and genders, running parallel to Sufi and Christian devotional mysticism.",[W("Bhakti"),B("Bhakti")]],
+["christiankabbalah","Christian Kabbalah","esoteric","Movement","1480s –","Renaissance Christian thinkers — Pico della Mirandola, Reuchlin — read Kabbalah as hidden proof of Christian truth, carrying its diagrams and Hebrew letter-lore into European occultism, where ‘Qabalah’ becomes a system of its own.",[W("Christian_Kabbalah")]],
+["pico","Pico della Mirandola","esoteric","Figure","1463–1494","Prodigy of Renaissance Florence whose 900 Theses (1486) tried to reconcile all philosophies and religions — Kabbalah, Hermeticism, Plato, Aristotle — and whose Oration became the ‘manifesto of the Renaissance’.",[W("Giovanni_Pico_della_Mirandola"),B("Giovanni-Pico-della-Mirandola")]],
+["templars","Knights Templar","esoteric","Order","1119–1312","Warrior-monks of the Crusades — Poor Knights of Christ and of the Temple of Solomon — arrested on Friday 13 October 1307 and suppressed amid heresy charges historians still debate. Their afterlife in Masonic degrees and occult legend far outlived the order itself.",[W("Knights_Templar"),B("Knights-Templar")]],
+["illuminati","Bavarian Illuminati","esoteric","Order","1776–1785","Adam Weishaupt’s small, real Enlightenment order in Bavaria — rationalist reformers working through Masonic lodges, banned within a decade, then inflated by two centuries of conspiracy literature into an all-explaining myth.",[W("Illuminati"),B("Illuminati")]],
+["oto","Ordo Templi Orientis (O.T.O.)","esoteric","Order","1895/1904 –","German-born fraternal order remodelled by Crowley as Thelema’s vehicle: graded initiations, a Gnostic Mass, and the main institutional home of modern ceremonial magick in the 20th century.",[W("Ordo_Templi_Orientis")]],
+["martinism","Martinism","esoteric","Movement / Order","18th c. –","French Christian esotericism after Martinez de Pasqually and Louis-Claude de Saint-Martin, ‘the Unknown Philosopher’: the fall and reintegration of man, worked through theurgy and inner prayer; orders persist today.",[W("Martinism")]],
+["thoth","Thoth Tarot","esoteric","Deck / Text","painted 1938–43; published 1969","Aleister Crowley’s tarot, painted by Lady Frieda Harris and explained in his Book of Thoth (1944): Thelemic doctrine, astrology, Kabbalah and Egyptian symbolism fused into 78 dense, swirling images — renamed cards (Adjustment, Lust, Art), reordered trumps, and a cult following ever since its posthumous publication.",[W("Thoth_tarot_deck","Wikipedia — Thoth Tarot"),W("The_Book_of_Thoth_(Crowley)","Wikipedia — The Book of Thoth")]],
+["rwsdeck","Rider–Waite–Smith Tarot","esoteric","Deck","1909 –","The world’s best-selling tarot: Arthur Edward Waite’s design, Pamela Colman Smith’s art, published by Rider & Co. in 1909. Its revolution was pictorial scenes on every Minor Arcana card — before it, pip cards were mostly plain — which is why nearly every modern deck and beginner’s book follows its pattern.",[W("Rider%E2%80%93Waite_Tarot","Wikipedia — Rider–Waite Tarot"),W("Rider-Waite_Tarot","Wikipedia — Rider-Waite-Smith Tarot")]],
+["waite","Arthur Edward Waite","esoteric","Figure","1857–1942","Occult scholar, Golden Dawn member and designer of the Rider–Waite–Smith deck; author of The Pictorial Key to the Tarot (1911). More Christian mystic than magician, he steered tarot toward divination and inner symbolism and away from ritual use.",[W("A._E._Waite","Wikipedia — A. E. Waite"),B("Arthur-Edward-Waite")]],
+["pcsmith","Pamela Colman Smith","esoteric","Figure","1878–1951","Artist, illustrator and Golden Dawn initiate (‘Pixie’) who painted the Rider–Waite–Smith deck in about six months in 1909 — drawing on Sola Busca scenes, theatre design and her own synaesthetic visions. Long credited only as ‘the artist’; modern editions restore her name to the title.",[W("Pamela_Colman_Smith"),W("Rider%E2%80%93Waite_Tarot","Wikipedia — Rider–Waite Tarot")]],
+["friedaharris","Lady Frieda Harris","esoteric","Figure","1877–1962","Artist and Crowley’s collaborator on the Thoth Tarot: five years of painting under his exacting, often exasperating direction, her geometric, projective-geometry-infused style giving Thelema its visual signature. The originals were exhibited in her lifetime; the deck appeared only in 1969.",[W("Frieda_Harris"),W("Thoth_tarot_deck","Wikipedia — Thoth Tarot")]]
+];
+var byId={}; NODES.forEach(function(n){byId[n[0]]={id:n[0],name:n[1],domain:n[2],kind:n[3],era:n[4],blurb:n[5],sources:n[6]};});
+
+/* ---------- edges: a,b,type,label,story,sources ---------- */
+var TYPES={lineage:{label:"Lineage",color:"#b07d1f",dash:""},teaching:{label:"Teaching",color:"#1f766e",dash:""},parallel:{label:"Parallel",color:"#5b6b82",dash:"7 5"},fusion:{label:"Fusion",color:"#b5502a",dash:""}};
+var EDGES=[
+["zoroastrianism","judaism","lineage","Ideas in exile","During and after the Babylonian Exile (from 586 BCE), Jewish thought absorbed Persian-flavoured ideas — a cosmic adversary, angels with names, resurrection and final judgement. Scholars debate how direct the borrowing was, but the parallels are concentrated exactly where the two peoples lived side by side.",[W("Zoroastrianism_and_Judaism","Wikipedia — Zoroastrianism and Judaism"),W("Second_Temple_Judaism")]],
+["judaism","christianity","lineage","Mother tradition","Christianity begins as a Jewish movement: Jesus, his disciples, the scriptures he quotes, and the first churches are all Jewish. The parting of the ways takes generations.",[W("Christianity_and_Judaism"),B("Christianity")]],
+["judaism","islam","lineage","Abraham’s other line","Islam presents itself as restoring Abraham’s original monotheism; the Qur’an retells Torah stories and honours Moses, while giving them an Arab prophet and a new law.",[W("Islam_and_Judaism"),W("Abraham_in_Islam","Wikipedia — Abraham in Islam")]],
+["christianity","islam","parallel","Jesus, two readings","Both honour Jesus — as God incarnate and saviour in Christianity; as virgin-born prophet and Messiah, but not God, in Islam. Same figure, opposite theologies.",[W("Jesus_in_Islam"),W("Jesus_in_Christianity","Wikipedia — Jesus in Christianity")]],
+["moses","torah","teaching","The lawgiver","Tradition credits Moses with receiving and transmitting the Torah on Mount Sinai — the covenant text at Judaism’s centre.",[W("Torah"),W("Moses")]],
+["muhammad","quran","teaching","The recitation","Muslims hold the Qur’an was revealed to Muhammad over 23 years and recited, memorised and written down by his followers.",[W("Quran"),W("Muhammad")]],
+["jesus","christianity","teaching","The founder","Jesus’ teaching, death and reported resurrection are Christianity’s founding events; the Gospels are its earliest surviving accounts.",[B("Jesus"),W("Historical_Jesus","Wikipedia — Historical Jesus")]],
+["judaism","kabbalah","teaching","The hidden Torah","Kabbalists read Torah as coded cosmology — every letter a clue to God’s inner life (the sefirot) and the repair of the world (tikkun).",[W("Kabbalah")]],
+["islam","sufism","teaching","The inner path","Sufism grows inside Islam as its contemplative heart — Qur’an and Prophet retained, but the goal shifts from obedience to loving union.",[B("Sufism"),W("Sufism")]],
+["christianity","gnosticism","lineage","The rival gospel","Gnostic teachers work with Christian (and Jewish) materials but invert them: the creator of this world is ignorant or evil, and Christ brings secret knowledge to escape him.",[W("Gnosticism"),IEP("gnostics","IEP — Gnosticism")]],
+["plato","gnosticism","lineage","Plato, radicalised","Gnosticism borrows Plato’s divided world — perfect Forms above, flawed matter below — and turns the craftsman-god (demiurge) into a villain.",[SEP("gnosticism","Stanford Encyclopedia — Gnosticism (forthcoming tradition)"),W("Demiurge")]],
+["hinduism","buddhism","lineage","The reform","Buddhism emerges from the same north-Indian world as early Hinduism — keeping karma, samsara and liberation, rejecting caste, sacrifice and a creator god.",[W("Buddhism_and_Hinduism"),B("Buddhism")]],
+["hinduism","jainism","parallel","Two renunciations","Jainism and the Hindu renouncer traditions share karma, rebirth and liberation, but Jainism makes ahimsa absolute and denies any creator — parallel answers from one ascetic culture.",[W("Jainism_and_Hinduism","Wikipedia — Jainism and Hinduism")]],
+["hinduism","sikhism","fusion","Between two worlds","Sikhism is its own revelation, not a blend — but it is born in Punjab where Hindu devotion (bhakti) and Muslim Sufi monotheism meet, and it argues with both.",[W("Sikhism"),B("Sikhism")]],
+["islam","sikhism","fusion","One God in Punjab","Guru Nanak’s ‘there is no Hindu, there is no Muslim’ and strict monotheism develop in dialogue with the Islam of Mughal Punjab.",[W("Guru_Nanak"),W("Sikhism")]],
+["buddha","buddhism","teaching","The awakened teacher","The Buddha’s first sermon sets the wheel of Dharma turning: Four Noble Truths and the Eightfold Path — Buddhism is quite literally his teaching and the community around it.",[B("Buddha"),W("The_Buddha")]],
+["krishna","hinduism","teaching","God as charioteer","In the Bhagavad Gita, Krishna teaches Arjuna how to act without attachment — the verses that become Hinduism’s most-read scripture.",[W("Bhagavad_Gita"),ST("hindu/gita/index.htm","Sacred-Texts — Bhagavad Gita")]],
+["karma","samsara","teaching","The engine of the wheel","Karma is what keeps samsara turning: actions ripen into future lives until knowledge or grace breaks the cycle.",[W("Samsara"),W("Karma")]],
+["karma","reincarnation","teaching","Why you return","In Indian thought reincarnation is not random — karma is its mechanism and its moral logic.",[W("Reincarnation"),B("Karma")]],
+["samsara","nirvana","teaching","Exit from the wheel","Nirvana is defined against samsara: the same tradition that maps the wheel of rebirth names its still point outside it.",[W("Nirvana"),W("Samsara")]],
+["buddhism","nirvana","teaching","The goal","Nirvana — the extinction of craving, hatred and delusion — is Buddhism’s summum bonum, attained by the Buddha under the Bodhi Tree.",[B("Nirvana"),W("Nirvana")]],
+["hinduism","yoga","teaching","The discipline","Yoga is one of Hinduism’s six classical systems and its most exported practice: meditation and posture as a path to still the mind.",[B("Yoga"),W("Yoga")]],
+["buddhism","meditation","teaching","The core practice","Buddhist meditation (bhavana) — from breath-watching to insight (vipassana) — is the engine room of the path to awakening.",[W("Buddhist_meditation","Wikipedia — Buddhist meditation")]],
+["hinduism","meditation","parallel","Older stillness","Meditative practice is described in the Upanishads before the Buddha — he learns from Hindu teachers, then redefines the goal.",[W("Meditation"),W("Dhyana_in_Hinduism","Wikipedia — Dhyana in Hinduism")]],
+["tantra","chakras","teaching","Mapping the subtle body","Chakra systems are set out in Tantric texts, which map energy channels and wheels on the meditating body — the source of every modern chakra chart.",[W("Chakra"),W("Tantra")]],
+["tantra","buddhism","lineage","Vajrayana","Tantric methods — mantra, mandala, deity yoga — are adopted into Mahayana Buddhism as Vajrayana, the ‘diamond vehicle’ of Tibet.",[W("Vajrayana"),W("Tantra")]],
+["ahimsa","jainism","teaching","The first vow","Ahimsa is Jainism’s supreme principle — monks sweep the path and filter water so as not to kill even insects.",[W("Ahimsa"),B("Jainism")]],
+["ahimsa","hinduism","parallel","Shared vow","Hindu texts also exalt ahimsa (‘the highest dharma’), and Gandhi — a Hindu formed partly by Jain friends — turns it into mass politics.",[W("Ahimsa"),W("Mahatma_Gandhi","Wikipedia — Mahatma Gandhi")]],
+["buddhism","zen","fusion","Buddhism meets Dao","As Buddhism travels the Silk Road into China it absorbs Daoist naturalness and brevity — and Zen (Chan) is the child of that marriage, later refined in Japan.",[W("Zen"),W("Chan_Buddhism","Wikipedia — Chan Buddhism")]],
+["daoism","zen","fusion","The Daoist ingredient","Zen’s suspicion of scripture, love of paradox and spontaneity are widely read as Daoism’s contribution to imported Buddhism.",[SEP("zen-buddhism","Stanford Encyclopedia — Zen Buddhism"),W("Zen")]],
+["laozi","daoism","teaching","The old master","Laozi is Daoism’s legendary founder and the Daodejing’s credited author — the tradition organises itself around his 81 short chapters.",[SEP("laozi"),W("Tao_Te_Ching","Wikipedia — Tao Te Ching")]],
+["confucius","confucianism","teaching","The first teacher","Confucianism is the school of Confucius: his Analects, compiled by disciples, set its agenda of ritual, family and humane rule.",[SEP("confucius"),B("Confucius")]],
+["daoism","yinyang","teaching","The pattern","Yin–yang cosmology, older than organised Daoism, becomes its central diagram: the Dao generating the two, the two generating the ten thousand things.",[W("Yin_and_yang"),SEP("daoism")]],
+["confucianism","yinyang","parallel","One cosmos, two ethics","Confucians use yin–yang and the Five Phases too — the cosmology is shared Chinese property; the argument is over what to do with it. Ritual order, says Confucius; effortless flow, says Laozi.",[IEP("yin-yang","IEP — Yin-Yang"),W("Chinese_philosophy","Wikipedia — Chinese philosophy")]],
+["daoism","wuwei","teaching","Effortless action","Wu wei is the Daodejing’s signature counsel: the sage acts without forcing, like water wearing down stone.",[W("Wu_wei"),SEP("daoism")]],
+["iching","confucianism","teaching","The classic of classics","The I Ching becomes one of Confucianism’s Five Classics, layered with commentaries (‘Ten Wings’) traditionally credited to Confucius himself.",[W("I_Ching"),W("Five_Classics","Wikipedia — Five Classics")]],
+["iching","daoism","parallel","The diviner’s book","Daoists also cast the I Ching — the same hexagrams read as nature’s flux rather than moral instruction. One book, two philosophies.",[W("I_Ching")]],
+["shinto","buddhism","fusion","Kami meet buddhas","For over a thousand years Japanese religion blends Shinto and Buddhism (shinbutsu-shugo): kami are read as local forms of buddhas, and shrines house temples until the Meiji state forcibly separates them in 1868.",[W("Shinbutsu-sh%C5%ABg%C5%8D","Wikipedia — Shinbutsu-shugo"),W("Shinto")]],
+["socrates","plato","teaching","The pupil who wrote","Socrates wrote nothing; Plato, his student, makes him the hero of dialogues that found Western philosophy — we meet the teacher through the pupil.",[SEP("socrates"),SEP("plato")]],
+["plato","aristotle","teaching","The pupil who disagreed","Aristotle studies 20 years in Plato’s Academy, then builds his own system — Forms brought down to earth, logic and biology in their place.",[SEP("aristotle"),W("Aristotle")]],
+["plato","soul","teaching","The immortal part","Plato’s Phaedo argues the soul is immortal and akin to the Forms — arguments that flow into Christian, Jewish and Muslim theology for two thousand years.",[SEP("ancient-theories-soul","Stanford Encyclopedia — Ancient Theories of Soul"),W("Phaedo")]],
+["pythagoras","plato","lineage","Number and soul","Plato inherits from the Pythagoreans: mathematics as cosmic key, the soul’s transmigration, and philosophy as a purification of the soul.",[SEP("pythagoras"),SEP("plato")]],
+["pythagoras","reincarnation","teaching","The Greek believer","Pythagoras teaches reincarnation in the Greek world centuries of tradition before Plato — reportedly remembering his own past lives.",[W("Metempsychosis"),SEP("pythagoras")]],
+["plato","neoplatonism","lineage","Plato systematised","Plotinus forges Plato (plus Aristotle and Stoicism) into Neoplatonism — one source, the One, from which soul and world emanate like light.",[SEP("neoplatonism"),SEP("plotinus","Stanford Encyclopedia — Plotinus")]],
+["neoplatonism","christianity","lineage","The Church’s philosophy","Augustine reads Plotinus and finds the bridge from pagan philosophy to Christian doctrine; Neoplatonism structures medieval theology East and West.",[SEP("augustine","Stanford Encyclopedia — Augustine"),W("Neoplatonism_and_Christianity","Wikipedia — Neoplatonism and Christianity")]],
+["neoplatonism","sufism","parallel","One ladder, two climbers","Islamic philosophy absorbs Neoplatonism through Arabic translations of Plotinus; Sufi metaphysics of emanation and return grows in the same soil.",[SEP("arabic-islamic-neoplatonism","Stanford Encyclopedia — Neoplatonism in Islamic Philosophy"),W("Islamic_philosophy","Wikipedia — Islamic philosophy")]],
+["neoplatonism","kabbalah","parallel","Emanation, twice","Kabbalah’s sefirot — God unfolding into the world by stages — develop in a medieval world saturated with Neoplatonic emanation schemes; historians trace both influence and independent invention.",[W("Sefirot"),W("Neoplatonism")]],
+["aristotle","islam","lineage","The First Teacher","Arabic philosophers call Aristotle ‘the First Teacher’: translated in Baghdad, he shapes Islamic (and then, via Arabic, Jewish and Christian) philosophy and science.",[W("Aristotle"),SEP("arabic-islamic-philosophy","Stanford Encyclopedia — Arabic & Islamic Philosophy")]],
+["stoicism","christianity","parallel","The neighbour ethic","Stoic ideas — providence, conscience, the brotherhood of man, Seneca’s letters — run parallel to early Christian ethics; later tradition even invents a correspondence between Seneca and Paul.",[W("Stoicism"),W("Seneca_the_Younger","Wikipedia — Seneca")]],
+["epicureanism","buddhism","parallel","Two cures for fear","Epicurus and the Buddha, near-contemporaries in different worlds, both diagnose fear and craving as the disease and offer a disciplined, communal cure — a classic scholarly parallel, not a contact.",[SEP("epicurus"),W("Buddhism")]],
+["spinoza","monotheism","parallel","One substance","Spinoza keeps monotheism’s ‘one’ but drops the person: God is Nature itself. Synagogues excommunicate him; pantheists adopt him as a saint.",[SEP("spinoza"),W("Pantheism")]],
+["nietzsche","existentialism","lineage","After the death of God","Nietzsche’s announcement that God is dead — and that meaning must now be created — is existentialism’s starting gun, for atheist and (via Kierkegaard) religious versions alike.",[SEP("nietzsche"),SEP("existentialism")]],
+["existentialism","zen","parallel","The absurd and the koan","Twentieth-century existentialists and Zen teachers read each other with recognition: both stare at groundlessness — one calls it absurdity, the other emptiness (sunyata).",[W("Existentialism"),W("Sunyata","Wikipedia — Śūnyatā")]],
+["jung","alchemy","lineage","Alchemy as psychology","Jung reads alchemists’ gold-making as a coded record of psychological transformation (individuation) — rescuing alchemy for the modern imagination.",[W("Psychology_and_Alchemy","Wikipedia — Psychology and Alchemy"),W("Carl_Jung")]],
+["jung","iching","lineage","The synchronicity book","Jung writes the foreword to the Wilhelm translation of the I Ching and uses it to argue for synchronicity — meaningful coincidence beyond cause.",[W("I_Ching"),W("Synchronicity")]],
+["jung","chakras","lineage","Chakras on the couch","Jung’s 1932 seminars on Kundalini yoga interpret chakras as stages of consciousness — a key relay by which Tantra entered Western psychology.",[W("Chakra"),W("Kundalini_yoga","Wikipedia — Kundalini yoga")]],
+["zeus","greekmyth","teaching","King of Olympus","Zeus heads the Greek pantheon — sky, thunder, law and hospitality — and fathers half its heroes.",[W("Zeus"),B("Zeus")]],
+["athena","greekmyth","teaching","The city’s mind","Athena embodies Greek ideals of wisdom and craft; her contest with Poseidon for Athens is the city’s founding myth.",[W("Athena")]],
+["apollo","greekmyth","teaching","The Delphic voice","Through the oracle at Delphi, Apollo is Greek religion’s channel of divine knowledge — ‘know thyself’ is carved at his temple.",[W("Delphi"),W("Apollo")]],
+["persephone","underworld","teaching","Queen below","Persephone’s yearly descent and return makes her the underworld’s queen — and her Mysteries at Eleusis promise initiates a better fate after death.",[W("Eleusinian_Mysteries","Wikipedia — Eleusinian Mysteries"),W("Persephone")]],
+["odin","norsemyth","teaching","The wisdom-seeker","Odin sacrifices an eye and hangs nine nights on Yggdrasil to win runes and knowledge — Norse myth’s god who pays for wisdom.",[W("Odin"),B("Odin")]],
+["thor","norsemyth","teaching","The defender","Thor is the most-worshipped Norse god of the Viking age — hammer amulets are found across Scandinavia, a working god against chaos.",[W("Thor")]],
+["isis","egyptmyth","teaching","The restorer","Isis gathers Osiris’ scattered body and revives him — Egypt’s great myth of love, magic and resurrection, later exported across Rome.",[W("Isis"),W("Osiris_myth","Wikipedia — Osiris myth")]],
+["osiris","isis","teaching","Death and repair","The Osiris–Isis story is one myth told by two gods: he is the murdered king, she the magician whose grief undoes death — the pattern for Egypt’s funerary religion.",[W("Osiris_myth","Wikipedia — Osiris myth")]],
+["osiris","afterlife","teaching","The judged dead","Osiris presides over the weighing of the heart: the Egyptian afterlife is earned by judgement — an idea later religions make central.",[W("Ancient_Egyptian_afterlife_beliefs","Wikipedia — Ancient Egyptian afterlife beliefs"),W("Osiris")]],
+["gilgamesh","mesomyth","teaching","The first epic","The Epic of Gilgamesh is Mesopotamia’s gift to world literature — friendship, grief, and a flood survivor named Utnapishtim.",[B("Gilgamesh"),ST("assyr/gilg/index.htm","Sacred-Texts — Epic of Gilgamesh")]],
+["gilgamesh","judaism","parallel","The older flood","Gilgamesh’s flood tablet (c. 1800 BCE) predates Genesis by a millennium: a god-warned man, a boat, animals, a mountain, birds sent out. Scholars read Genesis’ Noah in conversation with this older Mesopotamian tradition.",[W("Gilgamesh_flood_myth","Wikipedia — Gilgamesh flood myth"),W("Genesis_flood_narrative","Wikipedia — Genesis flood narrative")]],
+["zeus","odin","parallel","Sky-fathers","Zeus, Odin, and also the Vedic Dyaus and Roman Jupiter descend — linguists argue — from one Indo-European sky-father (*Dyēus). Comparative mythology’s flagship case.",[W("Dyaus"),W("Proto-Indo-European_mythology","Wikipedia — Proto-Indo-European mythology")]],
+["osiris","jesus","parallel","Dying and rising?","Frazer’s Golden Bough classed Osiris (and others) as ‘dying-and-rising gods’ paralleling Christ’s resurrection. Modern scholars mostly reject a direct borrowing and stress the differences — the parallel itself remains famous and contested.",[W("Dying-and-rising_deity","Wikipedia — Dying-and-rising deity"),W("The_Golden_Bough","Wikipedia — The Golden Bough")]],
+["greekmyth","norsemyth","parallel","Worlds that end","Greek myth cycles ages of decline; Norse myth ends the world at Ragnarök and regrows it. Both imagine time as decline-and-renewal rather than straight progress — a comparison drawn since the 19th century.",[W("Ragnarok","Wikipedia — Ragnarök"),W("Ages_of_Man","Wikipedia — Ages of Man")]],
+["underworld","afterlife","teaching","Mapping what’s next","Every afterlife doctrine needs geography: the underworld — Hades, Sheol, Duat, Naraka — is where traditions draw their maps of post-mortem justice and rest.",[W("Underworld"),W("Afterlife")]],
+["egyptmyth","hermeticism","fusion","Egypt in Greek dress","Hermeticism is born in Roman Egypt where Greek philosophy and Egyptian priestly lore fuse around the figure of Hermes-Thoth — ‘thrice-great Hermes’.",[W("Hermes_Trismegistus"),W("Hermeticism")]],
+["hermeticism","alchemy","lineage","As above, so below","The Emerald Tablet, ascribed to Hermes, gives alchemy its motto and its cosmology: the work below mirrors the heavens above.",[W("Emerald_Tablet"),W("Alchemy")]],
+["astrology","mesomyth","lineage","Babylon’s sky","Astrology’s zodiac, omens and planetary order are Babylonian inventions, exported to Egypt, Greece, India and Persia — one of history’s most successful knowledge transfers.",[W("Babylonian_astrology","Wikipedia — Babylonian astrology"),B("Astrology")]],
+["astrology","alchemy","parallel","Seven planets, seven metals","In the Hermetic world astrology and alchemy share one system: seven planets rule seven metals, days, organs and temperaments — the cosmos as a single correspondence table.",[W("Astrological_symbols","Wikipedia — Astrology symbols & correspondences"),W("Alchemy")]],
+["kabbalah","hermeticism","fusion","The Hermetic Qabalah","Renaissance and later occultists fuse Jewish Kabbalah with Hermeticism, astrology and tarot into ‘Hermetic Qabalah’ — the operating system of the Golden Dawn and modern Western magic.",[W("Hermetic_Qabalah"),W("Hermetic_Order_of_the_Golden_Dawn","Wikipedia — Golden Dawn")]],
+["tarot","kabbalah","fusion","Cards on the Tree","18th–19th century French occultists map tarot’s 22 trumps onto the 22 paths of the Kabbalistic Tree of Life — an invented correspondence that becomes occult orthodoxy.",[W("Tarot"),W("Hermetic_Qabalah")]],
+["crowley","tarot","teaching","The Thoth deck","Crowley (with artist Frieda Harris) redesigns the tarot as the Thoth deck, encoding his Thelema doctrine into the cards — still in print and widely used.",[W("Thoth_tarot_deck","Wikipedia — Thoth Tarot"),W("Aleister_Crowley")]],
+["crowley","wicca","lineage","The witch’s liturgy","Gerald Gardner knew Crowley and borrowed liberally from his writings (and the Golden Dawn) when composing Wicca’s rituals — a documented debt modern Wiccans openly discuss.",[W("Gerald_Gardner"),W("Wicca")]],
+["rosicrucianism","freemasonry","parallel","Secret degrees","Rosicrucian myth and Masonic ritual grow up together in 17th–18th century Europe: initiatory grades, symbolic temples, and brotherhoods claiming ancient wisdom — overlapping memberships included.",[W("Rosicrucianism"),W("Freemasonry")]],
+["freemasonry","kabbalah","parallel","Borrowed symbols","Some high-degree Masonic rites absorb Kabbalistic and Hermetic symbols — an affinity of symbolism and membership more than a descent.",[W("Freemasonry"),W("Kabbalah")]],
+["theosophy","blavatsky","teaching","The founder","Blavatsky co-founds the Theosophical Society in New York in 1875 and writes its scriptures, Isis Unveiled and The Secret Doctrine.",[W("Helena_Blavatsky"),W("Theosophy")]],
+["theosophy","hinduism","fusion","East, repackaged","Theosophy relocates to Adyar, India, champions Hindu revival, and re-exports karma, reincarnation and chakras to the West in English dress.",[W("Theosophical_Society_Adyar","Wikipedia — Theosophical Society Adyar"),W("Theosophy")]],
+["theosophy","akashic","teaching","The cosmic archive","The Akashic Records are a Theosophical development (from Sanskrit akasha) popularised by Leadbeater and later Edgar Cayce’s ‘readings’.",[W("Akashic_records")]],
+["theosophy","wicca","parallel","The revival climate","Theosophy’s century of popular occult publishing creates the readership and ideas-market in which Gardner’s Wicca and modern paganism become possible.",[W("Modern_paganism","Wikipedia — Modern Paganism"),W("Theosophy")]],
+["pythagoras","sacredgeo","teaching","Number as form","Sacred geometry descends from Pythagorean and Platonic claims that number and proportion structure the cosmos — the five Platonic solids are its alphabet.",[W("Sacred_geometry"),W("Platonic_solid","Wikipedia — Platonic solids")]],
+["plato","sacredgeo","lineage","The Timaeus solids","In Plato’s Timaeus the elements are built from perfect geometric solids — the founding text of the West’s sacred-geometry tradition.",[SEP("plato-timaeus","Stanford Encyclopedia — Plato’s Timaeus"),W("Timaeus_(dialogue)","Wikipedia — Timaeus")]],
+["buddhism","mindfulness","lineage","From monastery to clinic","Mindfulness is Buddhist sati, extracted and secularised: Kabat-Zinn’s 1979 MBSR programme cites Buddhist teachers while presenting the practice as medicine.",[W("Mindfulness"),W("Jon_Kabat-Zinn","Wikipedia — Jon Kabat-Zinn")]],
+["meditation","mindfulness","teaching","The secular form","Modern mindfulness is meditation reframed — same attention training, minus cosmology, ethics and liberation goals (a subtraction its Buddhist critics point out).",[W("Mindfulness"),B("Mindfulness")]],
+["yoga","meditation","teaching","Seat and stillness","Classical yoga is primarily a meditation discipline — the physical postures (asana) serve the sitting still. The stretch-first version is a 20th-century development.",[W("Yoga"),B("Yoga")]],
+["sufism","meditation","parallel","Remembrance","Sufi dhikr — rhythmic remembrance of God’s names — is Islam’s meditative discipline, functionally parallel to mantra and breath practices further east.",[W("Dhikr"),W("Sufism")]],
+["mysticism","sufism","teaching","Exemplar: Islam","Sufism is the textbook case of mysticism inside a law-centred religion — Rumi’s poetry of annihilation in God (fana) is its most-read expression.",[B("Sufism"),SEP("mysticism")]],
+["mysticism","kabbalah","parallel","Exemplar: Judaism","Kabbalists and Sufis, sometimes in the same Spanish and Near-Eastern cities, chart the soul’s ascent through staged worlds — parallel mystical cartography.",[W("Kabbalah"),W("Mysticism")]],
+["mysticism","zen","parallel","Exemplar: wordless","Zen’s insistence that awakening cannot be spoken mirrors mystical apophaticism everywhere — the Tao that can be told, the God beyond names.",[SEP("mysticism"),W("Zen")]],
+["monotheism","judaism","teaching","One God of Israel","Judaism’s Shema (‘the LORD is one’) is monotheism’s classic statement, sharpened during the Exile against Babylonian and Persian pantheons.",[W("Shema_Yisrael","Wikipedia — Shema Yisrael"),W("Monotheism")]],
+["monotheism","zoroastrianism","lineage","The Persian pioneer","Zoroastrianism is often cited as the earliest surviving monotheism-leaning faith — one supreme wise lord, a cosmic evil opponent, and a coming saviour.",[W("Zoroastrianism"),B("Monotheism")]],
+["afterlife","christianity","teaching","Heaven, hell, resurrection","Christianity’s afterlife — bodily resurrection, last judgement, heaven and hell — develops Jewish apocalyptic hopes around Jesus’ resurrection.",[W("Christian_eschatology","Wikipedia — Christian eschatology"),B("Afterlife")]],
+["afterlife","islam","teaching","Barzakh and judgement","Islam teaches an interim state (barzakh), resurrection, judgement by deeds and mercy, and paradise or hell — detailed in Qur’an and hadith.",[W("Islamic_eschatology","Wikipedia — Islamic eschatology")]],
+["pilgrimage","islam","teaching","The Hajj","Pilgrimage reaches its largest scale in the Hajj — millions circling the Kaaba in Mecca in rites tied to Abraham’s family story.",[W("Hajj"),B("Hajj")]],
+["pilgrimage","hinduism","parallel","Rivers and roads","Hindu pilgrimage (tirtha yatra) — to the Ganges, to Kumbh Mela, the world’s largest gathering — parallels Hajj and Camino as journey-as-devotion, independently developed.",[W("Tirtha_(Hinduism)","Wikipedia — Tirtha"),W("Kumbh_Mela","Wikipedia — Kumbh Mela")]],
+["ritual","confucianism","teaching","Li: ritual as ethics","Confucianism makes ritual (li) its central technology: performed propriety in family and state is how humans become humane.",[SEP("confucius"),W("Li_(Confucianism)","Wikipedia — Li (Confucian)")]],
+["ritual","shinto","parallel","Purity and festival","Shinto ritual centres on purification (harae) and festival (matsuri) for the kami — ritual as a community’s calendar rather than a creed.",[W("Shinto")]],
+["enlightenment","buddhism","teaching","Bodhi","‘Enlightenment’ is the standard English rendering of the Buddha’s awakening (bodhi) — seeing things as they are and ending rebirth.",[W("Enlightenment_in_Buddhism","Wikipedia — Enlightenment in Buddhism")]],
+["enlightenment","gnosticism","parallel","Saving knowledge","Gnosis and bodhi are structural cousins: liberation comes not from obedience or sacrifice but from waking knowledge of what you really are.",[W("Gnosis"),IEP("gnostics","IEP — Gnosticism")]],
+["soul","hinduism","teaching","Atman","Hindu philosophy names the soul atman and, in the Upanishads’ great equation, identifies it with Brahman, reality itself: tat tvam asi — ‘thou art that’.",[W("Atman_(Hinduism)","Wikipedia — Ātman"),ST("hindu/upan/index.htm","Sacred-Texts — The Upanishads")]],
+["soul","buddhism","parallel","The famous denial","Buddhism’s anatta — no permanent soul — is its sharpest break with Hindu thought: what reincarnates, then? Two thousand years of Buddhist philosophy argue the point.",[W("Anatta"),SEP("mind-indian-buddhism","Stanford Encyclopedia — Mind in Indian Buddhism")]],
+["dharma","buddhism","teaching","One word, the teaching","In Buddhism ‘Dharma’ simply is the teaching — the Buddha’s doctrine and the nature of reality it describes share one name.",[W("Dharma_(Buddhism)","Wikipedia — Dharma (Buddhism)")]],
+["daoism","confucianism","parallel","The great debate","Confucian order versus Daoist spontaneity is Chinese thought’s defining argument — most Chinese lives, and the state itself, end up using both: Confucian outside, Daoist inside, as the saying goes.",[W("Chinese_philosophy","Wikipedia — Chinese philosophy"),SEP("daoism")]],
+["sumer","mesomyth","lineage","Where the myths begin","Mesopotamian myth is largely Sumerian in origin — Inanna, Enki, the flood hero — translated into Akkadian and carried by Babylon and Assyria for two thousand years.",[W("Sumerian_religion"),W("Mesopotamian_religion")]],
+["sumer","astrology","lineage","The first sky-watchers","Sumerian and Babylonian temple astronomers lay astrology’s foundations: named constellations, planetary gods and omen lists that Greece, Egypt and India later adopt.",[W("Babylonian_astrology","Wikipedia — Babylonian astrology"),W("Sumer")]],
+["sumer","divination","teaching","Reading omens","Mesopotamian divination — extispicy (livers), omens, dream books — is among the earliest systematised anywhere, staffed by a professional diviner class at court and temple.",[W("Divination"),W("Mesopotamian_religion")]],
+["egyptciv","egyptmyth","teaching","A civilization’s religion","Egyptian myth is not a storybook beside the civilization — it is the civilization’s operating system: pharaoh as god-king, temple estates, funerary industry and a calendar of festivals.",[W("Ancient_Egyptian_religion")]],
+["egyptciv","isiac","lineage","Exported to Rome","As Egypt enters the Greek and Roman worlds, its Isis cult is repackaged as portable mystery initiation — Egyptian religion’s most successful export.",[W("Mysteries_of_Isis","Wikipedia — Mysteries of Isis")]],
+["indus","hinduism","parallel","Possible roots","Indus cities vanish a millennium before the Vedas are composed, yet motifs — ritual bathing, mother figures, a horned seated figure — keep scholars asking how much of later Hinduism begins here. The undeciphered script keeps the question open.",[W("Indus_Valley_Civilisation"),W("Indus_religion","Wikipedia — Indus religion")]],
+["indus","yoga","parallel","The ‘proto-Shiva’ seal","A famous Indus seal shows a horned figure seated heel-to-heel, read by some as an early yogi or Shiva-form and by others as a buffalo deity or ruler. Iconic, suggestive — and unresolved.",[W("Pashupati_seal","Wikipedia — Pashupati seal")]],
+["maya","underworld","teaching","Xibalba","In the Popol Vuh, the Hero Twins descend to Xibalba, the Maya underworld, survive its houses of bats, knives and cold, and outwit the lords of death at the ballgame — Mesoamerica’s great underworld journey.",[W("Popol_Vuh"),W("Xibalba")]],
+["maya","astrology","parallel","Independent sky science","Maya priest-astronomers track Venus to the day and build eclipse tables in the Dresden Codex — a sophisticated celestial system developed wholly independently of the Old World’s astrology.",[W("Maya_astronomy","Wikipedia — Maya astronomy"),W("Dresden_Codex")]],
+["aztec","ritual","teaching","Feeding the sun","Mexica state ritual — calendar festivals, offerings and human sacrifice — is framed in its own sources as cosmic maintenance: the sun must be fed or the fifth world ends as the previous four did.",[W("Aztec_religion"),W("Human_sacrifice_in_Aztec_culture","Wikipedia — Human sacrifice in Aztec culture")]],
+["aztec","underworld","parallel","Mictlan","The Aztec dead journey four years through nine levels of Mictlan — a hard road for everyone, judged by how they died, not how they lived: a strikingly different afterlife logic from Egypt’s or Christianity’s.",[W("Mictlan")]],
+["inca","ritual","teaching","Empire of the sun","Inca ritual binds empire together: Inti festivals at solstices, offerings at mountain shrines (huacas), and capacocha ceremonies on the highest peaks of the Andes.",[W("Inca_mythology"),W("Religion_in_the_Inca_Empire","Wikipedia — Religion in the Inca Empire")]],
+["inca","pilgrimage","parallel","Roads to shrines","Andean pilgrimage to mountain and island shrines — some still walked today in festivals like Qoyllur Rit’i — parallels Old World pilgrimage as journey, offering and transformation combined.",[W("Inca_Empire")]],
+["phoenicia","judaism","parallel","Neighbours in the Levant","Phoenician cities and Israel share a coastline, a language family and much religious vocabulary — Baal, El, Asherah appear on both sides of the border the Bible draws so sharply.",[W("Canaanite_religion"),W("Phoenicia")]],
+["phoenicia","greekmyth","lineage","The alphabet gift","Greek tradition itself credits the Phoenician Kadmos with bringing letters to Greece; the alphabet, and some god-forms travelling with trade (Adonis, from Semitic ‘adon’, lord), follow Phoenician ships.",[W("Phoenician_alphabet"),W("Adonis")]],
+["celts","druids","teaching","The learned class","Druids are the Celtic world’s ritual and intellectual specialists — Roman writers describe twenty-year trainings in memorised lore, conducted in groves, away from writing.",[W("Druid")]],
+["celts","wicca","lineage","Claimed ancestors","Modern paganism and Wicca draw their festival calendar (Samhain, Imbolc, Beltane, Lughnasa) from Celtic fire festivals, and Gardner and his successors presented witchcraft as the survival of this old religion — a lineage historians treat as inspiration rather than continuity.",[W("Wheel_of_the_Year"),W("Celtic_neopaganism","Wikipedia — Celtic neopaganism")]],
+["minoan","greekmyth","lineage","Before the Greeks","Minoan Crete precedes Mycenaean and classical Greece: the labyrinth, the Minotaur, Daedalus and Europa plausibly preserve Greek memories of Knossos, its palaces and its bull rites.",[W("Minoan_civilization"),W("Minotaur")]],
+["shangzhou","iching","lineage","Oracle bones to hexagrams","Shang kings divine by cracking oracle bones; Zhou tradition reframes divination in the I Ching’s hexagrams. Chinese divination, writing and philosophy share this root.",[W("Oracle_bone_script"),W("I_Ching")]],
+["shangzhou","confucianism","lineage","The remembered order","Confucius presents himself as transmitting Zhou ritual order — ancestor rites, Mandate of Heaven, the Duke of Zhou as sage — not inventing a new one.",[SEP("confucius"),W("Zhou_dynasty")]],
+["olmec","maya","lineage","Mother culture?","Olmec calendars, ballcourts, jaguar imagery and monumental art precede the Maya florescence; whether the Maya inherit, borrow or independently parallel these forms is a live archaeological argument.",[W("Olmecs"),W("Maya_civilization")]],
+["shamanism","underworld","teaching","The journey down","The shaman’s signature feat — descending to the land of the dead to retrieve a soul or escort the deceased — is the experiential cousin of mythic underworld journeys from Gilgamesh to Orpheus.",[W("Shamanism"),W("Underworld")]],
+["shamanism","meditation","parallel","Trance technologies","Drumming, fasting, isolation, chant and plant sacraments induce the shaman’s journey — a worldwide family of altered-state techniques functionally parallel to meditative absorption further east.",[W("Shamanism"),B("Shamanism")]],
+["magick","ceremonial","teaching","The working method","‘Magick’ names the aim; ceremonial magic is the method — temple, circle, invocation and banishing by which the modern magician works.",[W("Ceremonial_magic"),W("Magick_(Thelema)","Wikipedia — Magick (Thelema)")]],
+["magick","crowley","teaching","The spelling","Crowley adopts the archaic ‘magick’ (with k) in the early 1900s to distinguish the ‘Science and Art of causing Change to occur in conformity with Will’ from stage magic and fraud.",[W("Magick_(Thelema)","Wikipedia — Magick (Thelema)")]],
+["hermeticism","magick","lineage","The Hermetic root","Modern magick’s family tree runs through Hermeticism: correspondence (‘as above, so below’), planetary spirits and the magus as philosopher-priest descend from the Hermetica into every later system here.",[W("Hermeticism"),W("Ceremonial_magic")]],
+["ceremonial","goldendawn","lineage","Systematised","The Golden Dawn organises ceremonial magic into a curriculum — grades, examinations, temple work — synthesising grimoires, Qabalah and Egyptian symbolism into the template modern orders still copy.",[W("Hermetic_Order_of_the_Golden_Dawn","Wikipedia — Hermetic Order of the Golden Dawn")]],
+["goldendawn","crowley","teaching","The famous pupil","Crowley is initiated into the Golden Dawn in 1898, rockets through its grades, quarrels with its chiefs, and carries its system into Thelema — its most consequential and most rebellious student.",[W("Aleister_Crowley")]],
+["goldendawn","tarot","fusion","The occult deck","Golden Dawn doctrine fuses tarot with Qabalah and astrology — every card assigned a Hebrew letter, path and planet. Both great modern decks in this web, Thoth and Rider–Waite–Smith, are made by its members from this blueprint.",[W("Hermetic_Order_of_the_Golden_Dawn","Wikipedia — Hermetic Order of the Golden Dawn"),W("Tarot")]],
+["thelema","crowley","teaching","The prophet","Thelema begins, by Crowley’s account, in Cairo in 1904 with the dictation of The Book of the Law — he casts himself as its prophet and spends 43 years building its orders, rituals and commentaries.",[W("The_Book_of_the_Law"),W("Thelema")]],
+["thelema","magick","teaching","Will as method","Thelemic magick is magick with a doctrine: every ritual aims at discovering and doing the True Will — ‘Love is the law, love under will’.",[W("Thelema")]],
+["johndee","enochian","teaching","The angelic conversations","Between 1582 and 1589 Dee and Edward Kelley fill diaries with angelic dictation — alphabet, calls, tables — the complete record from which all Enochian magic derives.",[W("Enochian_magic"),W("John_Dee")]],
+["johndee","hermeticism","parallel","Scholar-magus","Dee’s Monas Hieroglyphica (1564) and vast Hermetic library make him the English Renaissance’s model magus — mathematics, empire and angelology in one career.",[W("John_Dee"),W("Monas_Hieroglyphica")]],
+["enochian","goldendawn","lineage","Adopted and graded","The Golden Dawn takes Dee’s raw Enochian material, organises it into its inner-order curriculum and chess-like Enochian boards — the form in which most modern practitioners meet it.",[W("Enochian_magic")]],
+["agrippa","ceremonial","lineage","The textbook","Agrippa’s Three Books (1533) is ceremonial magic’s first great textbook — natural, celestial and divine magic in one system, cited by practitioners for the next 400 years.",[W("Three_Books_of_Occult_Philosophy"),W("Heinrich_Cornelius_Agrippa")]],
+["agrippa","christiankabbalah","lineage","Kabbalah into magic","Agrippa, taught in the circle of Christian Kabbalists, weaves Hebrew names, sefirot and letter-magic into occult philosophy — a main channel by which Kabbalah enters Western magic.",[W("Christian_Kabbalah"),W("Heinrich_Cornelius_Agrippa")]],
+["paracelsus","alchemy","teaching","Alchemy becomes medicine","Paracelsus drags alchemy from the gold-quest into the pharmacy: spagyric remedies, mineral drugs and the signature of a plant read as its prescription.",[W("Paracelsus"),W("Spagyric")]],
+["eliphlevi","ceremonial","lineage","The revival’s theorist","Lévi gives 19th-century magic its theory — astral light, will, correspondence — and its public respectability; the Golden Dawn translates and builds directly on his works.",[W("Eliphas_L%C3%A9vi","Wikipedia — Éliphas Lévi"),W("Dogme_et_Rituel_de_la_Haute_Magie","Wikipedia — Transcendental Magic (Lévi)")]],
+["eliphlevi","tarot","fusion","Tarot unveiled","Lévi is the first to bind tarot systematically to Kabbalah and Hebrew letters in print, and to declare it the key to all occult science — the claim every later deck inherits.",[W("Eliphas_L%C3%A9vi","Wikipedia — Éliphas Lévi")]],
+["grimoires","ceremonial","teaching","The sourcebooks","Ceremonial practice is practised out of grimoires: the Key of Solomon’s circles and pentacles are drawn, nearly unchanged, in Golden Dawn temples and modern ritual manuals alike.",[W("Key_of_Solomon"),W("Grimoire")]],
+["grimoires","necromancy","teaching","The forbidden chapter","Many grimoires include necromantic operations — conjuring shades at gravesides — and medieval churchmen copied them anyway; necromancy survives largely inside these books.",[W("Necromancy"),W("Grimoire")]],
+["witchcraft","wicca","lineage","Reclaimed","Wicca presents itself as witchcraft revived — Gardner’s claim of an surviving New Forest coven is doubted by historians, but the reclamation itself creates modern witchcraft as a religion.",[W("Wicca"),W("Witch-cult_hypothesis","Wikipedia — Witch-cult hypothesis")]],
+["witchcraft","hoodoo","parallel","Folk magics","Village witchcraft and hoodoo are cousins in function — healing, protection, uncrossing, justice-work with herbs, candles and words — grown from different continents, histories and communities.",[W("Hoodoo_(folk_magic)","Wikipedia — Hoodoo (folk magic)"),W("Witchcraft")]],
+["necromancy","underworld","parallel","Asking the dead","Necromancy is the underworld visited for answers — Odysseus’ blood-offering, Saul and the Witch of Endor, Orpheus’ near-success — practice shadowing myth across cultures.",[W("Necromancy"),W("Nekyia")]],
+["necromancy","spiritualism","parallel","From rite to séance","Victorian spiritualism is necromancy domesticated: the medium replaces the magus, the parlour replaces the graveyard, but the request — speak with the dead — is the same.",[W("Spiritualism_(movement)","Wikipedia — Spiritualism (movement)"),W("Necromancy")]],
+["divination","astrology","teaching","The prestige branch","Astrology grows out of general omen-reading into antiquity’s most mathematical divination — horoscopes are divination specialised to birth and sky.",[W("Divination"),B("Astrology")]],
+["divination","tarot","parallel","Cards as oracle","Reading tarot is divination with a printed image-system — one of dozens of sortilege methods (lots, dice, bones, cards) humans use to let chance speak.",[W("Cartomancy"),W("Divination")]],
+["divination","iching","teaching","The classic case","Casting the I Ching — yarrow stalks or coins consulted against a text — is divination become literature, practised continuously for nearly three thousand years.",[W("I_Ching_divination","Wikipedia — I Ching divination")]],
+["spiritualism","theosophy","lineage","The séance door","Blavatsky begins as a spiritualist medium; Theosophy grows out of séance culture, then claims to explain its phenomena by Eastern doctrine — masters instead of spirits.",[W("Helena_Blavatsky"),W("Theosophy")]],
+["sigils","chaosmagic","teaching","The signature technique","Chaos magic adopts the sigil from Austin Osman Spare: condense a desire into a glyph, charge it in trance, forget it. Medieval spirit-seals become a do-it-yourself technology.",[W("Sigil"),W("Chaos_magic")]],
+["chaosmagic","magick","lineage","The postmodern heir","Chaos magic is magick after Crowley, filtered through comics, punk and systems theory: it keeps his results-first attitude and discards his orders, robes and hierarchies — mostly.",[W("Chaos_magic")]],
+["mysteries","eleusis","teaching","The exemplar","When scholars say ‘mystery religion’ they mean Eleusis first: annual, public-yet-secret, open to all Greek-speakers who were free of blood-guilt — the model against which Mithraism, Isis and the rest are compared.",[W("Eleusinian_Mysteries"),B("Mystery-religion")]],
+["mysteries","mithraism","teaching","The soldiers’ version","Mithraism shows the mystery pattern in masculine, military form: grades, tests, communal dining in cave-temples, and a saviour-god — with no women, no scriptures and no public face.",[W("Mithraism")]],
+["eleusis","persephone","teaching","The myth enacted","The Mysteries dramatise Demeter’s search for Persephone; initiates fast, drink the kykeon and witness something — shown, said or done — that ancient sources credit with removing death’s terror.",[W("Eleusinian_Mysteries"),W("Persephone")]],
+["eleusis","afterlife","teaching","A better hope","‘Happy is he who has seen these mysteries,’ says the Homeric Hymn to Demeter: the rite’s explicit promise is a better lot after death — an afterlife upgrade in a Greek world that mostly expected gloom.",[W("Eleusinian_Mysteries"),ST("gla/eleu/index.htm","Sacred-Texts — Eleusinian Mysteries")]],
+["mithraism","zoroastrianism","lineage","A Persian name","Mithras carries the name of the Persian Mithra, a Zoroastrian-associated god of covenant and light — but the Roman cult’s bull-slaying scene has no Persian source, and how much actually travelled is fiercely debated.",[W("Mithraism"),W("Mithra")]],
+["mithraism","christianity","parallel","The rival","Mithraism and early Christianity compete in the same cities and centuries — both with a saviour, communal meals, moral codes and rebirth language. Justin Martyr already complains of the resemblance; modern scholars stress real similarities and independent roots.",[W("Mithraism"),W("Mithraism_and_Christianity","Wikipedia — Mithraism and Christianity")]],
+["orphism","reincarnation","teaching","The Greek wheel","Orphic teaching gives Greece its clearest reincarnation doctrine: the soul cycles through bodies, paying for an ancient guilt, until purity and initiation end the ‘sorrowful wheel’.",[W("Orphism_(religion)","Wikipedia — Orphism (religion)"),W("Metempsychosis")]],
+["orphism","pythbrother","parallel","Twin brotherhoods","Orphics and Pythagoreans overlap so closely — vegetarianism, rebirth, purity rules, gold tablets — that ancient writers already blur them, and modern scholars treat them as neighbouring movements in one milieu.",[W("Pythagoreanism"),W("Orphism_(religion)","Wikipedia — Orphism (religion)")]],
+["orphism","underworld","teaching","Directions for the dead","Orphic gold tablets, folded into graves, coach the soul through the underworld: which spring to avoid, what to say to the guardians — ‘I am a child of Earth and starry Heaven’.",[W("Orphic_gold_tablets","Wikipedia — Orphic gold tablets"),ST("orf/index.htm","Sacred-Texts — Orphic hymns & fragments")]],
+["pythbrother","pythagoras","teaching","The founder’s community","The brotherhood is Pythagoras embodied as an institution: his doctrines survive because a disciplined community — bound by the famous five-year silence — practised and transmitted them.",[SEP("pythagoras"),W("Pythagoreanism")]],
+["pythbrother","mysteries","teaching","School as mystery","The brotherhood shows the mystery pattern inside philosophy: graded members (hearers vs mathematicians), secret symbols (symbola), initiation and a shared way of life aimed at purifying the soul.",[W("Pythagoreanism")]],
+["dionysian","mysteries","teaching","Ecstasy as initiation","Dionysian rites promise release (lysis) through ecstasy itself — the god possesses the worshipper, dissolving the boundary the Eleusinian rite approaches through spectacle.",[W("Dionysian_Mysteries")]],
+["dionysian","greekmyth","teaching","The twice-born god","Dionysus — torn apart as Zagreus in Orphic telling, reborn, god of wine and theatre — anchors Greek myth’s wildest strand: madness, masks and a god who dies and returns in ecstasy.",[W("Dionysus"),W("Zagreus")]],
+["isiac","isis","teaching","The goddess initiates","The Isiac mysteries centre wholly on Isis: Lucius in Apuleius’ novel is saved from asinine form by her grace and initiated into her nocturnal rites at Cenchreae — devotion, not just doctrine.",[W("Mysteries_of_Isis","Wikipedia — Mysteries of Isis"),W("The_Golden_Ass")]],
+["isiac","hermeticism","fusion","Egypt’s two exports","Hermeticism and the Isiac mysteries are sibling exports of Roman Egypt — one textual and philosophical, one ritual and initiatory — and later occultism happily merges them.",[W("Hermeticism"),W("Mysteries_of_Isis","Wikipedia — Mysteries of Isis")]],
+["samothrace","mysteries","teaching","Second to Eleusis","Samothrace shows the mystery form at sea: initiation in stages (myesis, epopteia), a sanctuary of the Great Gods, and fame as protectors of sailors — archaeology preserves its halls though not its secrets.",[W("Samothracian_religion","Wikipedia — Samothracian religion")]],
+["cybele","mysteries","teaching","The Mother’s rites","Cybele’s cult adds ecstatic music, processions and the taurobolium (bull sacrifice) to the mystery repertoire; her March festival staged Attis’ death and return as public drama with initiatory grades inside.",[W("Cybele"),W("Taurobolium")]],
+["eleusis","mysticism","parallel","Experience, not doctrine","The mysteries anticipate mysticism’s core claim: what saves is not believing a proposition but undergoing an experience — seen once, in darkness, and never afterwards describable.",[W("Greco-Roman_mysteries","Wikipedia — Greco-Roman mysteries"),SEP("mysticism")]],
+["christianmyst","christianity","teaching","The inner tradition","Christian mysticism is Christianity’s contemplative depth-dimension: from Paul’s ‘third heaven’ and desert prayer to Teresa’s mansions — always inside, sometimes at odds with, the institutional Church.",[W("Christian_mysticism")]],
+["christianmyst","mysticism","teaching","The textbook case, West","With Sufism and Kabbalah, Christian mysticism is one of comparative mysticism’s three classic Abrahamic cases — same debates about experience versus doctrine, union versus communion.",[SEP("mysticism"),W("Christian_mysticism")]],
+["eckhart","christianmyst","teaching","The daring preacher","Eckhart pushes Christian mysticism to its edge: the Godhead beyond God, the soul’s ground identical with God’s — sermons in German, to nuns and laypeople, that still startle.",[SEP("eckhart","Stanford Encyclopedia — Meister Eckhart")]],
+["teresa","christianmyst","teaching","The cartographer","Teresa gives the tradition its map: the Interior Castle’s seven mansions chart contemplative prayer stage by stage, grounding mystical theology in tested experience.",[W("The_Interior_Castle")]],
+["hesychasm","christianmyst","teaching","The Eastern branch","Hesychasm is Orthodoxy’s mystical school: prayer of the heart, psychosomatic technique and a theology of uncreated light that the Latin West largely declined to follow.",[W("Hesychasm")]],
+["hesychasm","meditation","parallel","Prayer as technique","The Jesus Prayer repeated with breath and heartbeat is Christianity’s closest functional parallel to mantra and breath meditation — developed independently in the Byzantine world.",[W("Jesus_Prayer"),W("Hesychasm")]],
+["rumi","sufism","teaching","The voice of the path","Rumi is Sufism’s most beloved expositor: his Masnavi is called ‘the Qur’an in Persian’ by admirers, and the Mevlevi order of whirling dervishes forms around his son after him.",[W("Rumi"),W("Mevlevi_Order")]],
+["ibnarabi","sufism","teaching","The system-builder","Ibn Arabi gives Sufism its metaphysical architecture — unity of being, the Perfect Human, the imaginal realm — read, debated and denounced across the Islamic world ever since.",[W("Ibn_Arabi")]],
+["hasidism","kabbalah","lineage","Kabbalah for everyone","Hasidism takes Lurianic Kabbalah — sparks trapped in matter, repair by joy — out of the Safed study-house and into song, story and everyday work in Polish and Ukrainian villages.",[W("Hasidic_Judaism")]],
+["hasidism","judaism","teaching","The revival","Within Judaism, Hasidism is a revolution of emphasis: prayer and joy over scholarship alone, a rebbe’s charisma over communal office — and bitter early opposition (the Mitnagdim) within Orthodoxy itself.",[W("Hasidic_Judaism"),B("Hasidism")]],
+["zohar","kabbalah","teaching","The central book","Nearly all later Kabbalah comments on the Zohar: its symbolic readings of Torah, erotic imagery for divine life and cast of wandering rabbis define the tradition’s imagination.",[W("Zohar")]],
+["luria","kabbalah","teaching","The Safed revolution","Luria teaches for barely two years before dying at 38; his disciples’ writings remake Kabbalah around cosmic catastrophe and repair — the version that flows into Hasidism and modern popular Kabbalah.",[W("Lurianic_Kabbalah","Wikipedia — Lurianic Kabbalah")]],
+["luria","zohar","lineage","Reading the Zohar anew","Lurianism presents itself as the Zohar’s true key: the older book’s symbols reread as a drama of contraction, shattering and repair that the Zohar itself never quite states.",[W("Isaac_Luria")]],
+["sefirot","kabbalah","teaching","The map","The sefirot are Kabbalah’s central diagram: ten lights or vessels mediating infinity and world, mapped onto scripture, the body and the soul — and later onto tarot, planets and chakras by occultists.",[W("Sefirot")]],
+["sefirot","tarot","fusion","Paths and cards","Occult tarot hangs its 22 trumps on the Tree’s 22 paths between sefirot — a correspondence invented in the 18th–19th centuries that both Thoth and Rider–Waite–Smith inherit from the Golden Dawn.",[W("Hermetic_Qabalah")]],
+["christiankabbalah","kabbalah","fusion","Read as Christian","Christian Kabbalah is a fusion by design: Jewish texts mined for Trinitarian and Christological ‘proofs’, producing a hybrid that real Kabbalists rejected and Renaissance Europe devoured.",[W("Christian_Kabbalah")]],
+["pico","christiankabbalah","teaching","The first Christian Kabbalist","Pico commissions translations of Kabbalistic works and puts Kabbalah into his 900 Theses — declaring no science better proves Christ’s divinity. The movement effectively starts with him.",[W("Giovanni_Pico_della_Mirandola")]],
+["pico","hermeticism","lineage","The Florentine synthesis","Pico’s circle — Ficino translating the Hermetica and Plato beside him — is the Renaissance occult synthesis in one room: Hermeticism, Platonism and Kabbalah as one ancient theology.",[W("Hermeticism"),W("Marsilio_Ficino")]],
+["bhakti","hinduism","teaching","The devotional path","Bhakti reshapes Hinduism from within: temple worship, pilgrimage and song in local languages carry devotion to millions whom Sanskrit ritual excluded.",[W("Bhakti_movement","Wikipedia — Bhakti movement")]],
+["bhakti","sufism","parallel","Lovers of God","Bhakti poet-saints and Sufi poets sing the same paradox — God as lover, separation as agony, song as prayer — in neighbouring centuries and shared cities; influence ran both ways in Mughal India.",[W("Bhakti"),W("Sufism")]],
+["templars","freemasonry","parallel","The claimed inheritance","Some 18th-century Masonic rites (Strict Observance, Knights Templar degrees) claimed descent from the suppressed Templars — a lineage historians reject but which permanently welded the two orders in the occult imagination.",[W("Knights_Templar_(Freemasonry)","Wikipedia — Knights Templar (Freemasonry)"),W("Knights_Templar")]],
+["templars","christianity","lineage","Monks with swords","The Templars are unthinkable without Latin Christianity: Cistercian rule, crusading vows and papal privilege create them — and a pope, pressured by France’s king, destroys them.",[W("Knights_Templar")]],
+["illuminati","freemasonry","lineage","Inside the lodges","The historical Illuminati grew by infiltrating Masonic lodges — recruiting reformers from within Freemasonry is precisely why the two are permanently confused in popular legend.",[W("Illuminati"),W("Freemasonry")]],
+["oto","thelema","teaching","Thelema institutionalised","The O.T.O. under Crowley becomes Thelema’s order: its degrees reworked around The Book of the Law and its Gnostic Mass (1913) serving as the public rite of Thelemic religion.",[W("Ordo_Templi_Orientis"),W("Liber_XV","Wikipedia — Liber XV (Gnostic Mass)")]],
+["oto","goldendawn","parallel","Rival heirs","O.T.O. and Golden Dawn are the two great rival heirs of the 19th-century occult revival — one Masonic-Thelemic, one Hermetic-Qabalistic — with Crowley, awkwardly, a product of both.",[W("Ordo_Templi_Orientis")]],
+["martinism","rosicrucianism","parallel","French cousins","Martinism and Rosicrucianism overlap in membership, symbolism and aim (man’s reintegration) across French occultism — Papus, who heads Martinist orders, also writes Rosicrucian histories.",[W("Martinism"),W("Rosicrucianism")]],
+["martinism","christianmyst","parallel","Esoteric Christianity","Martinists call their way the ‘way of the heart’ inside Christianity — closer to Eckhart and the hesychasts in spirit than to ceremonial magic, though its founders practised both.",[W("Martinism")]],
+["goldendawn","freemasonry","parallel","Lodge form, occult content","The Golden Dawn borrows Freemasonry’s lodge structure, oaths and grades (its founders were Masons) while filling the form with Qabalah, tarot and ritual magic instead of moral allegory.",[W("Hermetic_Order_of_the_Golden_Dawn","Wikipedia — Hermetic Order of the Golden Dawn")]],
+["goldendawn","rosicrucianism","lineage","Claimed descent","The Golden Dawn presents its authority as Rosicrucian — cipher manuscripts, a supposed German adept (‘Fräulein Sprengel’) — a foundation story scholars read as invention in the long Rosicrucian tradition of useful fictions.",[W("Cipher_Manuscripts"),W("Rosicrucianism")]],
+["crowley","oto","teaching","Head of the order","Crowley leads the O.T.O.’s English-speaking branch from 1912 and rewrites its system around Thelema; after his death the order fragments, reunifies, and litigates — its history is modern occultism in miniature.",[W("Ordo_Templi_Orientis")]],
+["thoth","crowley","teaching","His deck","The Thoth Tarot is Crowley’s final major work: he directs every card’s symbolism from The Book of Thoth, renames three trumps (Adjustment for Justice, Lust for Strength, Art for Temperance) and restores an astrological ordering he claimed was the original.",[W("Thoth_tarot_deck","Wikipedia — Thoth Tarot"),W("The_Book_of_Thoth_(Crowley)","Wikipedia — The Book of Thoth")]],
+["thoth","friedaharris","teaching","The painter","Harris paints the Thoth deck over five years (1938–43) through dozens of rejected versions per card; her projective-geometry backgrounds and translucent figures make the deck visually unlike any before it.",[W("Frieda_Harris"),W("Thoth_tarot_deck","Wikipedia — Thoth Tarot")]],
+["thoth","tarot","teaching","A deck within the tradition","Thoth is a tarot deck — 78 cards, trumps and four suits — that tries to contain the whole occult system at once: use it for divination and you handle Kabbalah, astrology and Thelema simultaneously, by design.",[W("Thoth_tarot_deck","Wikipedia — Thoth Tarot")]],
+["thoth","thelema","teaching","Doctrine in pictures","Thoth encodes Thelema visually: the Aeon replaces the Last Judgement, Babalon and the Beast appear in Lust, and the court cards are reimagined as Knights, Queens, Princes and Princesses of a Thelemic court.",[W("Thoth_tarot_deck","Wikipedia — Thoth Tarot")]],
+["thoth","kabbalah","fusion","On the Tree","Like all Golden Dawn-descended decks, Thoth assigns its trumps to the Tree of Life’s paths and its small cards to sefirot-plus-planets — its novelty is how thoroughly Crowley documents the assignments.",[W("Hermetic_Qabalah"),W("Thoth_tarot_deck","Wikipedia — Thoth Tarot")]],
+["rwsdeck","waite","teaching","The designer","Waite specifies the Rider–Waite–Smith deck’s symbolism from his occult researches — and keeps some meanings deliberately veiled, as he admits in The Pictorial Key, which frustrated and fascinated readers for a century.",[W("A._E._Waite","Wikipedia — A. E. Waite"),W("The_Pictorial_Key_to_the_Tarot","Wikipedia — The Pictorial Key to the Tarot")]],
+["rwsdeck","pcsmith","teaching","The artist","Smith paints all 78 Rider–Waite–Smith images, inventing narrative scenes for the numbered cards — the deck’s single most influential innovation, and one she was paid a flat fee for, with no royalties and (for decades) no name on the box.",[W("Pamela_Colman_Smith")]],
+["rwsdeck","tarot","teaching","The default deck","Rider–Waite–Smith becomes tarot’s default setting: most 20th- and 21st-century decks, guidebooks, apps and learning courses teach its images and meanings, even when their art departs from it.",[W("Rider%E2%80%93Waite_Tarot","Wikipedia — Rider–Waite Tarot")]],
+["rwsdeck","goldendawn","lineage","Golden Dawn offspring","Both Waite and Smith were Golden Dawn initiates; the deck translates the order’s tarot doctrine — titles, attributions, the swap of Strength and Justice — into popular form, minus the ritual machinery.",[W("Rider%E2%80%93Waite_Tarot","Wikipedia — Rider–Waite Tarot")]],
+["waite","goldendawn","teaching","Member and critic","Waite joins the Golden Dawn in 1891, leaves, returns, and eventually leads a splinter temple — his tarot and his Holy Grail studies both grow from, and argue with, its teachings.",[W("A._E._Waite","Wikipedia — A. E. Waite")]],
+["pcsmith","goldendawn","teaching","Initiate artist","Smith enters the Golden Dawn in 1901 through W. B. Yeats’ circle; its tarot lectures supply the framework she paints, while her theatre work and music-induced visions supply the life in the images.",[W("Pamela_Colman_Smith")]],
+["waite","christianmyst","parallel","The mystic, not magus","Waite insists he is a Christian mystic who studies occultism historically — his deck’s quiet, church-inflected symbolism (the Popess become High Priestess notwithstanding) reflects that self-understanding.",[W("A._E._Waite","Wikipedia — A. E. Waite")]],
+["thoth","rwsdeck","parallel","The two modern classics","Thoth and Rider–Waite–Smith are modern tarot’s twin poles — one esoteric, dense and painterly; one narrative, legible and ubiquitous. Both descend from Golden Dawn doctrine; nearly every deck since argues with one or the other.",[W("Thoth_tarot_deck","Wikipedia — Thoth Tarot"),W("Rider%E2%80%93Waite_Tarot","Wikipedia — Rider–Waite Tarot")]]
+];
+var edges=EDGES.map(function(e,i){return {id:i,a:e[0],b:e[1],type:e[2],label:e[3],story:e[4],sources:e[5]};});
+
+/* ---------- layout ---------- */
+var svg=document.getElementById('graph');
+var NS='http://www.w3.org/2000/svg';
+var domainKeys=Object.keys(DOMAINS);
+var centers={}; domainKeys.forEach(function(k,i){var ang=(i/domainKeys.length)*Math.PI*2- Math.PI/2; centers[k]={x:600+Math.cos(ang)*335, y:380+Math.sin(ang)*245};});
+var pos={};
+NODES.forEach(function(n,i){
+  var c=centers[n[2]]; var members=NODES.filter(function(m){return m[2]===n[2]}); var idx=members.indexOf(n); var total=members.length;
+  var ang=(idx/total)*Math.PI*2; var rad= total>22?112: total>14?92: total>10?78:62;
+  pos[n[0]]={x:c.x+Math.cos(ang)*rad + ((i*37)%21-10), y:c.y+Math.sin(ang)*rad*0.78 + ((i*53)%17-8)};
+});
+var degree={}; edges.forEach(function(e){degree[e.a]=(degree[e.a]||0)+1; degree[e.b]=(degree[e.b]||0)+1;});
+
+/* view transform */
+var view={x:0,y:0,k:1};
+var gRoot=document.createElementNS(NS,'g'); svg.appendChild(gRoot);
+var gEdges=document.createElementNS(NS,'g'); var gNodes=document.createElementNS(NS,'g'); gRoot.appendChild(gEdges); gRoot.appendChild(gNodes);
+function applyView(){gRoot.setAttribute('transform','translate('+view.x+','+view.y+') scale('+view.k+')');}
+
+var edgeEls={}, nodeEls={};
+edges.forEach(function(e){
+  var l=document.createElementNS(NS,'line'); l.setAttribute('stroke',TYPES[e.type].color); l.setAttribute('stroke-dasharray',TYPES[e.type].dash);
+  l.setAttribute('x1',pos[e.a].x); l.setAttribute('y1',pos[e.a].y); l.setAttribute('x2',pos[e.b].x); l.setAttribute('y2',pos[e.b].y); l.setAttribute('class','edge');
+  l.addEventListener('click',function(ev){ev.stopPropagation(); selectEdge(e);});
+  gEdges.appendChild(l); edgeEls[e.id]=l;
+});
+NODES.forEach(function(n){
+  var id=n[0], node=byId[id];
+  var g=document.createElementNS(NS,'g'); g.setAttribute('class','node'); g.setAttribute('transform','translate('+pos[id].x+','+pos[id].y+')');
+  var r=7+Math.min(11,(degree[id]||1)*1.4);
+  var c=document.createElementNS(NS,'circle'); c.setAttribute('r',r); c.setAttribute('fill',DOMAINS[node.domain].color);
+  var t=document.createElementNS(NS,'text'); t.setAttribute('text-anchor','middle'); t.setAttribute('y',r+14); t.setAttribute('font-size','11.5'); t.setAttribute('fill','currentColor'); t.textContent=node.name;
+  g.appendChild(c); g.appendChild(t);
+  g.addEventListener('click',function(ev){ev.stopPropagation(); selectNode(id);});
+  // drag node
+  g.addEventListener('pointerdown',function(ev){ ev.stopPropagation(); var start={x:ev.clientX,y:ev.clientY,px:pos[id].x,py:pos[id].y,moved:false};
+    function mv(e2){ var dx=(e2.clientX-start.x)/view.k, dy=(e2.clientY-start.y)/view.k; if(Math.abs(dx)+Math.abs(dy)>2) start.moved=true; pos[id].x=start.px+dx; pos[id].y=start.py+dy; g.setAttribute('transform','translate('+pos[id].x+','+pos[id].y+')'); refreshEdges(); }
+    function up(){ window.removeEventListener('pointermove',mv); window.removeEventListener('pointerup',up); if(!start.moved) selectNode(id); }
+    window.addEventListener('pointermove',mv); window.addEventListener('pointerup',up);
+  });
+  gNodes.appendChild(g); nodeEls[id]=g;
+});
+function refreshEdges(){ edges.forEach(function(e){ var l=edgeEls[e.id]; l.setAttribute('x1',pos[e.a].x); l.setAttribute('y1',pos[e.a].y); l.setAttribute('x2',pos[e.b].x); l.setAttribute('y2',pos[e.b].y); }); }
+applyView();
+/* pan & zoom */
+(function(){ var drag=null;
+ svg.addEventListener('pointerdown',function(e){ if(e.target===svg) drag={x:e.clientX,y:e.clientY,vx:view.x,vy:view.y};});
+ window.addEventListener('pointermove',function(e){ if(drag){ view.x=drag.vx+(e.clientX-drag.x); view.y=drag.vy+(e.clientY-drag.y); applyView(); }});
+ window.addEventListener('pointerup',function(){drag=null;});
+ svg.addEventListener('wheel',function(e){ e.preventDefault(); var f=e.deltaY<0?1.1:0.9; view.k=Math.max(.45,Math.min(2.6,view.k*f)); applyView(); },{passive:false});
+ svg.addEventListener('click',function(){ clearSel(); });
+})();
+
+/* ---------- filters ---------- */
+var activeDomains=new Set(domainKeys), activeTypes=new Set(Object.keys(TYPES));
+var df=document.getElementById('domainFilters');
+domainKeys.forEach(function(k){ var b=document.createElement('button'); b.className='on dot'; b.style.setProperty('--c',DOMAINS[k].color); b.textContent=DOMAINS[k].label; b.setAttribute('aria-pressed','true');
+ b.onclick=function(){ if(activeDomains.has(k)){activeDomains.delete(k);b.classList.remove('on');b.setAttribute('aria-pressed','false');}else{activeDomains.add(k);b.classList.add('on');b.setAttribute('aria-pressed','true');} applyFilters(); }; df.appendChild(b); });
+var tf=document.getElementById('typeFilters');
+Object.keys(TYPES).forEach(function(k){ var b=document.createElement('button'); b.className='on dot'; b.style.setProperty('--c',TYPES[k].color); b.textContent=TYPES[k].label; b.setAttribute('aria-pressed','true');
+ b.onclick=function(){ if(activeTypes.has(k)){activeTypes.delete(k);b.classList.remove('on');b.setAttribute('aria-pressed','false');}else{activeTypes.add(k);b.classList.add('on');b.setAttribute('aria-pressed','true');} applyFilters(); }; tf.appendChild(b); });
+
+var query='';
+document.getElementById('search').addEventListener('input',function(e){ query=e.target.value.trim().toLowerCase(); applyFilters(); });
+function nodeVisible(id){ var n=byId[id]; if(!activeDomains.has(n.domain)) return false; if(query && !(n.name.toLowerCase().includes(query)||n.kind.toLowerCase().includes(query)||n.blurb.toLowerCase().includes(query))) return false; return true; }
+function applyFilters(){
+  var shownN=0, shownE=0;
+  NODES.forEach(function(n){ var v=nodeVisible(n[0]); nodeEls[n[0]].style.display=v?'':'none'; if(v)shownN++; nodeEls[n[0]].classList.remove('dim'); });
+  edges.forEach(function(e){ var v=activeTypes.has(e.type)&&nodeVisible(e.a)&&nodeVisible(e.b); edgeEls[e.id].style.display=v?'':'none'; if(v)shownE++; edgeEls[e.id].classList.remove('dim','hl'); });
+  document.getElementById('graphStatus').textContent='Showing '+shownN+' nodes · '+shownE+' connections'+(query?' matching “'+query+'”':'');
+}
+document.getElementById('stNodes').textContent=NODES.length;
+document.getElementById('stEdges').textContent=edges.length;
+
+/* ---------- detail panel ---------- */
+var panel=document.getElementById('panel');
+function sourcesHTML(list){ return '<h3>Research further — sources</h3><ul class="sources">'+list.map(function(s){return '<li><a href="'+s.url+'" target="_blank" rel="noopener">'+s.label+' ↗</a><small>'+s.note+'</small></li>';}).join('')+'</ul>'; }
+function connsOf(id){ return edges.filter(function(e){return e.a===id||e.b===id;}); }
+function selectNode(id){
+  clearHL(); var n=byId[id]; nodeEls[id].classList.add('sel');
+  connsOf(id).forEach(function(e){ edgeEls[e.id].classList.add('hl'); var other=e.a===id?e.b:e.a; });
+  var conns=connsOf(id).map(function(e){ var other=byId[e.a===id?e.b:e.a]; return '<li><button data-node="'+other.id+'"><span>'+other.name+' — <i>'+e.label+'</i></span><small style="color:'+TYPES[e.type].color+'">'+TYPES[e.type].label+'</small></button></li>';}).join('');
+  panel.innerHTML='<div class="kind">'+DOMAINS[n.domain].label+' · '+n.kind+'</div><h2>'+n.name+'</h2><div class="meta"><span>'+n.era+'</span><span>'+(degree[id]||0)+' connections</span></div><p>'+n.blurb+'</p><h3>Connected to</h3><ul class="connlist">'+conns+'</ul>'+sourcesHTML(n.sources)+'<p style="margin-top:14px;font-size:13px;color:var(--muted)">Tap a connection above to jump to that node, or tap a line in the graph to read that link’s own story and sources.</p>';
+  wirePanel();
+  panel.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function selectEdge(e){
+  clearHL(); edgeEls[e.id].classList.add('hl'); nodeEls[e.a].classList.add('sel'); nodeEls[e.b].classList.add('sel');
+  panel.innerHTML='<div class="kind">Connection · '+TYPES[e.type].label+'</div><h2>'+byId[e.a].name+' ↔ '+byId[e.b].name+'</h2><div class="meta"><span>'+e.label+'</span></div><p>'+e.story+'</p><div class="trace"><button data-node="'+e.a+'">Open '+byId[e.a].name+'</button><button data-node="'+e.b+'">Open '+byId[e.b].name+'</button></div>'+sourcesHTML(e.sources);
+  wirePanel();
+}
+function wirePanel(){ panel.querySelectorAll('[data-node]').forEach(function(b){ b.onclick=function(){ selectNode(b.getAttribute('data-node')); }; }); }
+function clearHL(){ edges.forEach(function(e){edgeEls[e.id].classList.remove('hl');}); NODES.forEach(function(n){nodeEls[n[0]].classList.remove('sel');}); }
+function clearSel(){ clearHL(); showHome(); }
+function showHome(){
+  panel.innerHTML='<div class="kind">Start here</div><h2>The web at a glance</h2><p>Nine families of knowledge, '+edges.length+' documented links between them — now including ancient civilizations, the mystery schools, occult magick, deeper mysticism and Kabbalah, and the secret societies. The biggest hubs are the ideas almost everyone shares — and the travellers that carried ideas between worlds.</p><h3>Biggest hubs</h3><ul class="connlist">'+Object.keys(degree).sort(function(a,b){return degree[b]-degree[a];}).slice(0,7).map(function(id){return '<li><button data-node="'+id+'"><span>'+byId[id].name+'</span><small>'+degree[id]+' links</small></button></li>';}).join('')+'</ul><h3>A good first click</h3><p>Try <b>Gilgamesh ↔ Judaism</b> (the older flood), <b>Eleusis ↔ Persephone</b> (the mystery enacted), <b>Sefirot ↔ Tarot</b> (cards on the Tree), or <b>Thoth Tarot ↔ Rider–Waite–Smith</b> (the two modern classics). Every link opens with its story and its research sources.</p>';
+  wirePanel();
+}
+showHome();
+document.getElementById('reset').onclick=function(){ view={x:0,y:0,k:1}; applyView(); activeDomains=new Set(domainKeys); activeTypes=new Set(Object.keys(TYPES)); document.querySelectorAll('#domainFilters button,#typeFilters button').forEach(function(b){b.classList.add('on');}); document.getElementById('search').value=''; query=''; applyFilters(); clearSel(); };
+document.getElementById('surprise').onclick=function(){ var pool=edges.filter(function(e){return activeTypes.has(e.type)&&nodeVisible(e.a)&&nodeVisible(e.b);}); if(!pool.length) pool=edges; var e=pool[Math.floor(Math.random()*pool.length)]; selectEdge(e); };
+
+/* ---------- threads ---------- */
+var THREADS=[
+ {t:"One God, many roads",c:"#b07d1f",ids:["zoroastrianism","judaism","christianity","islam","sikhism"],d:"From Persian and Israelite beginnings to the faiths that now claim half the world — and a Punjabi path that argues with all of them."},
+ {t:"Death, judgement & return",c:"#7a5aa0",ids:["osiris","afterlife","persephone","underworld","samsara","nirvana"],d:"Egypt weighs the heart, Greece ferries the dead, India turns the wheel — and names the way off it."},
+ {t:"Waking up",c:"#1f766e",ids:["buddha","enlightenment","gnosticism","zen","wuwei","meditation","mindfulness"],d:"Liberation by knowledge rather than obedience — from Bodh Gaya and the Gnostics to a 1979 stress clinic in Massachusetts."},
+ {t:"The hidden curriculum",c:"#8a6d1f",ids:["kabbalah","hermeticism","alchemy","tarot","theosophy","akashic","wicca"],d:"Secret knowledge goes public: Kabbalistic trees, Hermetic tables, Theosophy’s archives, and a 1950s witchcraft revival built from all three."},
+ {t:"Stone, sky & spell",c:"#96613a",ids:["sumer","astrology","egyptciv","hermeticism","agrippa","goldendawn","magick","chaosmagic"],d:"From Babylonian sky-watching and Egyptian temples through Renaissance occult philosophy to the Golden Dawn, Crowley’s magick and its chaos-magic heirs."},
+ {t:"In secret, initiated",c:"#7d3c5e",ids:["mysteries","eleusis","mithraism","orphism","pythbrother","goldendawn","freemasonry"],d:"The mystery pattern across three millennia: Eleusis and Mithras, Orphic gold tablets and Pythagorean silence — then lodges and orders that consciously revived the form."},
+ {t:"Two decks, one doctrine",c:"#1f766e",ids:["tarot","goldendawn","waite","rwsdeck","pcsmith","crowley","thoth","friedaharris"],d:"Golden Dawn tarot doctrine splits into the two modern classics: Waite & Smith’s narrative deck for everyone, and Crowley & Harris’s dense Thelemic Thoth."}
+];
+var th=document.getElementById('threads');
+THREADS.forEach(function(tr){ var d=document.createElement('div'); d.className='thread'; d.style.setProperty('--c',tr.c); d.innerHTML='<h3>'+tr.t+'</h3><p>'+tr.d+'</p>'; var b=document.createElement('button'); b.textContent='Light up this thread →'; b.onclick=function(){ clearHL(); var set=new Set(tr.ids); NODES.forEach(function(n){ if(!set.has(n[0])) nodeEls[n[0]].classList.add('dim'); }); edges.forEach(function(e){ if(set.has(e.a)&&set.has(e.b)) edgeEls[e.id].classList.add('hl'); else edgeEls[e.id].classList.add('dim'); }); selectNode(tr.ids[0]); }; d.appendChild(b); th.appendChild(d); });
+
+/* ---------- trace (BFS) ---------- */
+var fromSel=document.getElementById('fromSel'), toSel=document.getElementById('toSel');
+var sorted=NODES.slice().sort(function(a,b){return a[1].localeCompare(b[1]);});
+sorted.forEach(function(n){ fromSel.innerHTML+='<option value="'+n[0]+'">'+n[1]+'</option>'; toSel.innerHTML+='<option value="'+n[0]+'">'+n[1]+'</option>'; });
+fromSel.value='gilgamesh'; toSel.value='mindfulness';
+function bfs(a,b){ var prev={}; prev[a]=null; var q=[a]; while(q.length){ var cur=q.shift(); if(cur===b) break; connsOf(cur).forEach(function(e){ var nxt=e.a===cur?e.b:e.a; if(!(nxt in prev)){ prev[nxt]={from:cur,edge:e}; q.push(nxt);} }); } if(!(b in prev)) return null; var path=[]; var cur=b; while(cur!==a){ path.unshift(prev[cur]); cur=prev[cur].from; } return path; }
+document.getElementById('traceBtn').onclick=function(){
+  var a=fromSel.value,b=toSel.value,out=document.getElementById('traceOut');
+  if(a===b){ out.innerHTML='<p>Pick two different nodes.</p>'; return; }
+  var path=bfs(a,b); clearHL();
+  if(!path){ out.innerHTML='<p>No chain found under the current filters’ full graph — try another pair.</p>'; return; }
+  var html='<p><b>'+path.length+' hop'+(path.length>1?'s':'')+':</b> '+byId[a].name+' → '+path.map(function(s){return byId[s.edge.a===s.from?s.edge.b:s.edge.a].name;}).join(' → ')+'</p><ol class="pathsteps">';
+  var cur=a; path.forEach(function(s){ var nxt=s.edge.a===cur?s.edge.b:s.edge.a; edgeEls[s.edge.id].classList.add('hl'); nodeEls[cur].classList.add('sel'); nodeEls[nxt].classList.add('sel');
+    html+='<li><b>'+byId[cur].name+' → '+byId[nxt].name+'</b> ('+TYPES[s.edge.type].label+' — '+s.edge.label+')<br><a href="'+s.edge.sources[0].url+'" target="_blank" rel="noopener">Research: '+s.edge.sources[0].label+' ↗</a></li>'; cur=nxt; });
+  html+='</ol>'; out.innerHTML=html;
+};
+
+/* ---------- index ---------- */
+var ig=document.getElementById('indexGrid');
+sorted.forEach(function(n){ var node=byId[n[0]]; var b=document.createElement('button'); b.className='indexcard'; b.innerHTML='<b>'+node.name+'</b><span>'+DOMAINS[node.domain].label+' · '+node.kind+' · '+node.era+'</span>'; b.onclick=function(){ selectNode(node.id); window.scrollTo({top:0,behavior:'smooth'}); }; ig.appendChild(b); });
+applyFilters();
+</script>
+</body>
+</html>
