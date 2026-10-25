@@ -836,6 +836,7 @@ var degree={}; edges.forEach(function(e){degree[e.a]=(degree[e.a]||0)+1; degree[
 
 /* view transform */
 var view={x:0,y:0,k:1};
+var graphPinch=false; /* true while a two-finger pinch is in progress on the graph */
 var gRoot=document.createElementNS(NS,'g'); svg.appendChild(gRoot);
 var gEdges=document.createElementNS(NS,'g'); var gNodes=document.createElementNS(NS,'g'); gRoot.appendChild(gEdges); gRoot.appendChild(gNodes);
 function applyView(){gRoot.setAttribute('transform','translate('+view.x+','+view.y+') scale('+view.k+')');}
@@ -857,20 +858,44 @@ NODES.forEach(function(n){
   g.addEventListener('click',function(ev){ev.stopPropagation(); selectNode(id);});
   // drag node
   g.addEventListener('pointerdown',function(ev){ ev.stopPropagation(); var start={x:ev.clientX,y:ev.clientY,px:pos[id].x,py:pos[id].y,moved:false};
-    function mv(e2){ var dx=(e2.clientX-start.x)/view.k, dy=(e2.clientY-start.y)/view.k; if(Math.abs(dx)+Math.abs(dy)>2) start.moved=true; pos[id].x=start.px+dx; pos[id].y=start.py+dy; g.setAttribute('transform','translate('+pos[id].x+','+pos[id].y+')'); refreshEdges(); }
-    function up(){ window.removeEventListener('pointermove',mv); window.removeEventListener('pointerup',up); if(!start.moved) selectNode(id); }
+    function mv(e2){ if(e2.pointerId!==ev.pointerId) return; if(graphPinch){ start.moved=true; return; } var dx=(e2.clientX-start.x)/view.k, dy=(e2.clientY-start.y)/view.k; if(Math.abs(dx)+Math.abs(dy)>2) start.moved=true; pos[id].x=start.px+dx; pos[id].y=start.py+dy; g.setAttribute('transform','translate('+pos[id].x+','+pos[id].y+')'); refreshEdges(); }
+    function up(e2){ if(e2&&e2.pointerId!==ev.pointerId) return; window.removeEventListener('pointermove',mv); window.removeEventListener('pointerup',up); if(!start.moved) selectNode(id); }
     window.addEventListener('pointermove',mv); window.addEventListener('pointerup',up);
   });
   gNodes.appendChild(g); nodeEls[id]=g;
 });
 function refreshEdges(){ edges.forEach(function(e){ var l=edgeEls[e.id]; l.setAttribute('x1',pos[e.a].x); l.setAttribute('y1',pos[e.a].y); l.setAttribute('x2',pos[e.b].x); l.setAttribute('y2',pos[e.b].y); }); }
 applyView();
-/* pan & zoom */
-(function(){ var drag=null;
- svg.addEventListener('pointerdown',function(e){ if(e.target===svg) drag={x:e.clientX,y:e.clientY,vx:view.x,vy:view.y};});
- window.addEventListener('pointermove',function(e){ if(drag){ view.x=drag.vx+(e.clientX-drag.x); view.y=drag.vy+(e.clientY-drag.y); applyView(); }});
- window.addEventListener('pointerup',function(){drag=null;});
- svg.addEventListener('wheel',function(e){ e.preventDefault(); var f=e.deltaY<0?1.1:0.9; view.k=Math.max(.45,Math.min(2.6,view.k*f)); applyView(); },{passive:false});
+/* pan, pinch & wheel zoom — the svg has touch-action:none, so the browser
+   leaves touch gestures to the page: pinch zoom must be handled here. */
+(function(){
+ var pointers=new Map(); var drag=null; var pinch=null;
+ function clampK(k){ return Math.max(.45,Math.min(2.6,k)); }
+ function toUser(cx,cy){ var m=svg.getScreenCTM(); if(!m) return {x:cx,y:cy}; var p=new DOMPoint(cx,cy).matrixTransform(m.inverse()); return {x:p.x,y:p.y}; }
+ function zoomAt(u,nk){ var gx=(u.x-view.x)/view.k, gy=(u.y-view.y)/view.k; view.k=nk; view.x=u.x-gx*view.k; view.y=u.y-gy*view.k; applyView(); }
+ function midClient(){ var pts=Array.from(pointers.values()); return {x:(pts[0].x+pts[1].x)/2, y:(pts[0].y+pts[1].y)/2, d:Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y)}; }
+ function startPinch(){ var m=midClient(); var u=toUser(m.x,m.y); pinch={d0:m.d, k0:view.k, gx:(u.x-view.x)/view.k, gy:(u.y-view.y)/view.k}; drag=null; graphPinch=true; }
+ svg.addEventListener('pointerdown',function(e){
+   pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,bg:e.target===svg});
+   if(pointers.size===2){ startPinch(); }
+   else if(pointers.size===1 && e.target===svg){ var u=toUser(e.clientX,e.clientY); drag={id:e.pointerId,ux:u.x,uy:u.y,vx:view.x,vy:view.y}; }
+ },true);
+ window.addEventListener('pointermove',function(e){
+   if(!pointers.has(e.pointerId)) return;
+   var prev=pointers.get(e.pointerId); pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,bg:prev.bg});
+   if(pinch && pointers.size===2){ var m=midClient(); if(m.d>0 && pinch.d0>0){ var u=toUser(m.x,m.y); var nk=clampK(pinch.k0*m.d/pinch.d0); view.k=nk; view.x=u.x-pinch.gx*nk; view.y=u.y-pinch.gy*nk; applyView(); } }
+   else if(drag && e.pointerId===drag.id){ var u2=toUser(e.clientX,e.clientY); view.x=drag.vx+(u2.x-drag.ux); view.y=drag.vy+(u2.y-drag.uy); applyView(); }
+ });
+ function endPointer(e){
+   if(!pointers.has(e.pointerId)) return;
+   pointers.delete(e.pointerId);
+   if(pointers.size<2){ pinch=null; graphPinch=false; }
+   if(drag && e.pointerId===drag.id) drag=null;
+   if(!pinch && pointers.size===1){ var ent=pointers.entries().next().value; if(ent[1].bg){ var u=toUser(ent[1].x,ent[1].y); drag={id:ent[0],ux:u.x,uy:u.y,vx:view.x,vy:view.y}; } }
+ }
+ window.addEventListener('pointerup',endPointer);
+ window.addEventListener('pointercancel',endPointer);
+ svg.addEventListener('wheel',function(e){ e.preventDefault(); zoomAt(toUser(e.clientX,e.clientY), clampK(view.k*(e.deltaY<0?1.12:0.89))); },{passive:false});
  svg.addEventListener('click',function(){ clearSel(); });
 })();
 
